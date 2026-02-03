@@ -12,6 +12,8 @@ celery[redis]>=5.3
 django-celery-beat>=2.5
 
 # State machines
+# Note: django-fsm is deprecated but viewflow.fsm requires significant refactoring.
+# TODO: Migrate to viewflow.fsm in a future phase.
 django-fsm>=2.8
 
 # Audit trail
@@ -34,6 +36,9 @@ httpx>=0.26
 # Production server
 gunicorn>=21.2
 whitenoise>=6.6
+
+# Utils
+python-dateutil>=2.8
 
 # Environment
 python-dotenv>=1.0

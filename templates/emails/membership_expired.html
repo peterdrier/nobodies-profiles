@@ -1,0 +1,25 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Membership Expired" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<div class="highlight" style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0;">
+    <strong>{% trans "Your Nobodies Collective membership has expired." %}</strong>
+</div>
+
+<p>{% trans "As a result, your access to the following has been revoked:" %}</p>
+<ul>
+    <li>{% trans "Shared Google Drive resources" %}</li>
+    <li>{% trans "Team folders and documents" %}</li>
+    <li>{% trans "Member-only areas of the platform" %}</li>
+</ul>
+
+<p>{% trans "If you wish to renew your membership, please contact the board. We would be happy to have you continue as part of our community." %}</p>
+
+<p>{% trans "Thank you for your time with Nobodies Collective." %}</p>
+
+<p>{% trans "Best regards," %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}

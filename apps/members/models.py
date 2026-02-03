@@ -224,3 +224,107 @@ class RoleAssignment(models.Model):
         if today > self.end_date:
             return None
         return (self.end_date - today).days
+
+
+class Team(models.Model):
+    """
+    Represents a working team within the organization.
+
+    Teams can be granted access to specific Google Drive resources.
+    """
+    name = models.CharField(
+        _('name'),
+        max_length=100,
+        unique=True,
+    )
+    slug = models.SlugField(
+        _('slug'),
+        max_length=100,
+        unique=True,
+    )
+    description = models.TextField(
+        _('description'),
+        blank=True,
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+    )
+    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
+
+    # Audit trail
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = _('team')
+        verbose_name_plural = _('teams')
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def active_members(self):
+        """Get all active members of this team."""
+        return self.memberships.filter(
+            is_active=True,
+            profile__role_assignments__is_active=True,
+        ).select_related('profile')
+
+
+class TeamRole(models.TextChoices):
+    """Roles within a team."""
+    MEMBER = 'MEMBER', _('Member')
+    LEAD = 'LEAD', _('Team Lead')
+
+
+class TeamMembership(models.Model):
+    """
+    Tracks membership in a team.
+
+    A profile can belong to multiple teams.
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='team_memberships',
+        verbose_name=_('profile'),
+    )
+    team = models.ForeignKey(
+        Team,
+        on_delete=models.CASCADE,
+        related_name='memberships',
+        verbose_name=_('team'),
+    )
+    role_in_team = models.CharField(
+        _('role in team'),
+        max_length=20,
+        choices=TeamRole.choices,
+        default=TeamRole.MEMBER,
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+    )
+    added_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='team_memberships_added',
+        verbose_name=_('added by'),
+    )
+    joined_at = models.DateTimeField(_('joined at'), auto_now_add=True)
+    left_at = models.DateTimeField(_('left at'), null=True, blank=True)
+
+    # Audit trail
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = _('team membership')
+        verbose_name_plural = _('team memberships')
+        unique_together = ['profile', 'team']
+
+    def __str__(self):
+        return f"{self.profile.legal_name} - {self.team.name}"

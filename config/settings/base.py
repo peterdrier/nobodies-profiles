@@ -48,6 +48,7 @@ LOCAL_APPS = [
     'apps.members',
     'apps.applications',
     'apps.documents',
+    'apps.google_access',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -179,6 +180,20 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BEAT_SCHEDULE = {
+    'reconcile-google-permissions': {
+        'task': 'apps.google_access.tasks.reconcile_google_permissions',
+        'schedule': 86400,  # Daily (24 hours in seconds)
+    },
+    'check-expiring-memberships': {
+        'task': 'apps.google_access.tasks.check_expiring_memberships',
+        'schedule': 86400,  # Daily
+    },
+    'retry-failed-google-operations': {
+        'task': 'apps.google_access.tasks.retry_failed_operations',
+        'schedule': 3600,  # Hourly
+    },
+}
 
 # Cache configuration
 CACHES = {
@@ -214,3 +229,6 @@ REST_FRAMEWORK = {
 LEGAL_DOCS_REPO = os.environ.get('LEGAL_DOCS_REPO', 'nobodies-collective/legal')
 LEGAL_DOCS_BRANCH = os.environ.get('LEGAL_DOCS_BRANCH', 'main')
 GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
+
+# Google Service Account for Drive API
+GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get('GOOGLE_SERVICE_ACCOUNT_JSON', '')

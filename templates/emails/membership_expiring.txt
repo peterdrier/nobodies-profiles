@@ -1,0 +1,21 @@
+{% load i18n %}{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% blocktrans with days=days_remaining %}Your Nobodies Collective membership will expire in {{ days }} days.{% endblocktrans %}
+
+{% trans "To continue your participation in our organization, please contact the board to discuss renewal options." %}
+
+{% trans "If your membership expires, you will lose access to:" %}
+- {% trans "Shared Google Drive resources" %}
+- {% trans "Team folders and documents" %}
+- {% trans "Member-only areas of the platform" %}
+
+{% trans "If you have any questions about the renewal process, please don't hesitate to reach out." %}
+
+{% trans "Thank you for your continued participation in Nobodies Collective." %}
+
+{% trans "Best regards," %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}

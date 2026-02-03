@@ -1,0 +1,19 @@
+{% load i18n %}{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% trans "Your Nobodies Collective membership has expired." %}
+
+{% trans "As a result, your access to the following has been revoked:" %}
+- {% trans "Shared Google Drive resources" %}
+- {% trans "Team folders and documents" %}
+- {% trans "Member-only areas of the platform" %}
+
+{% trans "If you wish to renew your membership, please contact the board. We would be happy to have you continue as part of our community." %}
+
+{% trans "Thank you for your time with Nobodies Collective." %}
+
+{% trans "Best regards," %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}

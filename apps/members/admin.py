@@ -5,7 +5,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Profile, RoleAssignment
+from .models import Profile, RoleAssignment, Team, TeamMembership
 
 
 class ProfileResource(resources.ModelResource):
@@ -87,3 +87,47 @@ class RoleAssignmentAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         if days <= 30:
             return f'⚠️ {days}'
         return days
+
+
+class TeamMembershipInline(admin.TabularInline):
+    """Inline admin for team memberships."""
+    model = TeamMembership
+    extra = 0
+    readonly_fields = ('joined_at', 'left_at')
+    fields = ('profile', 'role_in_team', 'is_active', 'added_by', 'joined_at', 'left_at')
+    raw_id_fields = ('profile', 'added_by')
+
+
+@admin.register(Team)
+class TeamAdmin(SimpleHistoryAdmin):
+    """Admin interface for Team model."""
+    list_display = ('name', 'slug', 'member_count', 'is_active', 'created_at')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'slug', 'description')
+    prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ('created_at', 'updated_at')
+    inlines = [TeamMembershipInline]
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'description', 'is_active')
+        }),
+        (_('Timestamps'), {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    @admin.display(description=_('Members'))
+    def member_count(self, obj):
+        return obj.memberships.filter(is_active=True).count()
+
+
+@admin.register(TeamMembership)
+class TeamMembershipAdmin(SimpleHistoryAdmin):
+    """Admin interface for TeamMembership model."""
+    list_display = ('profile', 'team', 'role_in_team', 'is_active', 'joined_at')
+    list_filter = ('team', 'role_in_team', 'is_active')
+    search_fields = ('profile__legal_name', 'profile__user__email', 'team__name')
+    raw_id_fields = ('profile', 'added_by')
+    readonly_fields = ('joined_at', 'left_at')

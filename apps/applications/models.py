@@ -150,6 +150,7 @@ class Application(models.Model):
         default=ApplicationStatus.SUBMITTED,
         verbose_name=_('status'),
     )
+
     batch = models.ForeignKey(
         ApplicationBatch,
         on_delete=models.SET_NULL,

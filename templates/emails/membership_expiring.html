@@ -1,0 +1,27 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Membership Expiring Soon" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<div class="highlight" style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
+    <strong>{% blocktrans with days=days_remaining %}Your Nobodies Collective membership will expire in {{ days }} days.{% endblocktrans %}</strong>
+</div>
+
+<p>{% trans "To continue your participation in our organization, please contact the board to discuss renewal options." %}</p>
+
+<p>{% trans "If your membership expires, you will lose access to:" %}</p>
+<ul>
+    <li>{% trans "Shared Google Drive resources" %}</li>
+    <li>{% trans "Team folders and documents" %}</li>
+    <li>{% trans "Member-only areas of the platform" %}</li>
+</ul>
+
+<p>{% trans "If you have any questions about the renewal process, please don't hesitate to reach out." %}</p>
+
+<p>{% trans "Thank you for your continued participation in Nobodies Collective." %}</p>
+
+<p>{% trans "Best regards," %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}
