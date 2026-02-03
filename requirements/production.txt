@@ -1,0 +1,4 @@
+-r base.txt
+
+# Error tracking (optional)
+# sentry-sdk>=1.38

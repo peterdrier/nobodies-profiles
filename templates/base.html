@@ -1,0 +1,44 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Nobodies Profiles{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'home' %}" class="logo">Nobodies Collective</a>
+            <div class="nav-links">
+                {% if user.is_authenticated %}
+                    <span>{{ user.get_short_name }}</span>
+                    <a href="{% url 'account_logout' %}">{% trans "Log out" %}</a>
+                {% else %}
+                    <a href="{% url 'account_login' %}">{% trans "Log in" %}</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {% now "Y" %} Asociación Nobodies Collective</p>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

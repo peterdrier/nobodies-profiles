@@ -1,0 +1,36 @@
+# Local development docker-compose
+# Run with: docker compose -f docker/docker-compose.local.yml up -d
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: nobodies-db-local
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nobodies
+    ports:
+      - "5433:5432"  # Use 5433 to avoid conflicts with other postgres instances
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nobodies"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: nobodies-redis-local
+    restart: unless-stopped
+    ports:
+      - "6380:6379"  # Use 6380 to avoid conflicts
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data_local:

@@ -1,0 +1,133 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nobodies-web
+    restart: unless-stopped
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-localhost}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-nobodies}
+      - REDIS_URL=redis://redis:6379/0
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-noreply@nobodies.team}
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - nobodies
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nobodies.rule=Host(`${DOMAIN:-profiles.i.burn.camp}`)"
+      - "traefik.http.routers.nobodies.entrypoints=websecure"
+      - "traefik.http.routers.nobodies.tls=true"
+      - "traefik.http.routers.nobodies.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nobodies.loadbalancer.server.port=8000"
+      # Homepage integration (optional)
+      - "homepage.group=Services"
+      - "homepage.name=Nobodies Profiles"
+      - "homepage.icon=mdi-account-group"
+      - "homepage.href=https://${DOMAIN:-profiles.i.burn.camp}"
+      - "homepage.description=Membership Management"
+
+  db:
+    image: postgres:16-alpine
+    container_name: nobodies-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-nobodies}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nobodies
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-nobodies}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: nobodies-redis
+    restart: unless-stopped
+    networks:
+      - nobodies
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  celery-worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nobodies-celery-worker
+    restart: unless-stopped
+    command: celery -A config worker -l INFO
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-nobodies}
+      - REDIS_URL=redis://redis:6379/0
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - nobodies
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: nobodies-celery-beat
+    restart: unless-stopped
+    command: celery -A config beat -l INFO
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.production
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-nobodies}
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - celery_beat_data:/app/celerybeat
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - nobodies
+
+networks:
+  nobodies:
+    name: nobodies
+  proxy:
+    external: true
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  celery_beat_data:

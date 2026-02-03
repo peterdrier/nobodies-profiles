@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Home" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Welcome to Nobodies Profiles" %}</h1>
+
+    {% if user.is_authenticated %}
+        <p>{% blocktrans with name=user.get_short_name %}Hello, {{ name }}!{% endblocktrans %}</p>
+        <p>{% trans "Your account is set up. More features coming soon." %}</p>
+    {% else %}
+        <p>{% trans "Sign in with your Google account to get started." %}</p>
+        <a href="{% url 'account_login' %}" class="btn btn-primary">{% trans "Sign in with Google" %}</a>
+    {% endif %}
+</div>
+{% endblock %}
