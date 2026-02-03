@@ -167,60 +167,60 @@ Phased implementation plan for the membership management system.
 - [ ] Create GCP project (or use existing)
 - [ ] Create service account with Drive API access
 - [ ] Enable domain-wide delegation (if Workspace) or direct sharing
-- [ ] Store credentials as env var or mounted secret
+- [x] Store credentials as env var or mounted secret
 
 ### 3.2 Google Resource Models
-- [ ] GoogleResource model (Drive, Folder, Document)
-- [ ] RoleGoogleAccess model (role → resources)
-- [ ] TeamGoogleAccess model (team → resources)
-- [ ] GooglePermissionLog model (audit trail)
+- [x] GoogleResource model (Drive, Folder, Document)
+- [x] RoleGoogleAccess model (role → resources)
+- [x] TeamGoogleAccess model (team → resources)
+- [x] GooglePermissionLog model (audit trail)
 
 ### 3.3 Permission Grant/Revoke Functions
-- [ ] `grant_permission(profile, resource, role)` - creates Drive permission
-- [ ] `revoke_permission(profile, resource)` - removes Drive permission
-- [ ] Handle rate limiting with exponential backoff
-- [ ] Log all attempts in GooglePermissionLog
+- [x] `grant_permission(profile, resource, role)` - creates Drive permission
+- [x] `revoke_permission(profile, resource)` - removes Drive permission
+- [x] Handle rate limiting with exponential backoff
+- [x] Log all attempts in GooglePermissionLog
 
 ### 3.4 Triggered Provisioning
-- [ ] Signal: on status → ACTIVE
-- [ ] Celery task: `provision_google_access`
-- [ ] Grant all RoleGoogleAccess resources for user's role
-- [ ] Store google_permission_id for later revocation
+- [x] Signal: on status → ACTIVE
+- [x] Celery task: `provision_google_access`
+- [x] Grant all RoleGoogleAccess resources for user's role
+- [x] Store google_permission_id for later revocation
 
 ### 3.5 Triggered Revocation
-- [ ] Signal: on status → RESTRICTED/EXPIRED/REMOVED
-- [ ] Celery task: `revoke_google_access`
-- [ ] Revoke ALL permissions using stored permission IDs
-- [ ] Log results
+- [x] Signal: on status → RESTRICTED/EXPIRED/REMOVED
+- [x] Celery task: `revoke_google_access`
+- [x] Revoke ALL permissions using stored permission IDs
+- [x] Log results
 
 ### 3.6 Teams
-- [ ] Team model
-- [ ] TeamMembership model (profile ↔ team, role_in_team)
-- [ ] Admin interface for team management
-- [ ] Assign members to teams
+- [x] Team model
+- [x] TeamMembership model (profile ↔ team, role_in_team)
+- [x] Admin interface for team management
+- [x] Assign members to teams
 
 ### 3.7 Team-Based Access
-- [ ] On TeamMembership create: grant TeamGoogleAccess resources
-- [ ] On TeamMembership deactivate: revoke team-specific resources only
-- [ ] Celery tasks: `provision_team_google_access`, `revoke_team_google_access`
+- [x] On TeamMembership create: grant TeamGoogleAccess resources
+- [x] On TeamMembership deactivate: revoke team-specific resources only
+- [x] Celery tasks: `provision_team_google_access`, `revoke_team_google_access`
 
 ### 3.8 Daily Reconciliation
-- [ ] Celery beat: `reconcile_google_permissions`
-- [ ] Calculate desired state: active profiles × their role/team resources
-- [ ] Fetch actual state from Google API (with pagination)
-- [ ] Grant missing permissions, revoke extra ones
-- [ ] Log all corrections
+- [x] Celery beat: `reconcile_google_permissions`
+- [x] Calculate desired state: active profiles × their role/team resources
+- [x] Fetch actual state from Google API (with pagination)
+- [x] Grant missing permissions, revoke extra ones
+- [x] Log all corrections
 - [ ] Spread API calls over time (not burst)
 
 ### 3.9 Membership Expiry Handling
-- [ ] RoleAssignment has end_date (start_date + 2 years)
-- [ ] Celery beat: `check_expiring_memberships`
-- [ ] Send reminders at 60/30/7/0 days before expiry
-- [ ] On expiry day: deactivate RoleAssignment, status → EXPIRED, revoke access
+- [x] RoleAssignment has end_date (start_date + 2 years)
+- [x] Celery beat: `check_expiring_memberships`
+- [x] Send reminders at 60/30/7/0 days before expiry
+- [x] On expiry day: deactivate RoleAssignment, status → EXPIRED, revoke access
 
 ### 3.10 Google Sync Status (Board)
-- [ ] View recent sync logs
-- [ ] Per-member sync status
+- [x] View recent sync logs (via admin)
+- [x] Per-member sync status (via admin)
 - [ ] Manual "sync now" button (per person or global)
 - [ ] Error log with retry controls
 
