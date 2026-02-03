@@ -7,9 +7,9 @@ Phased implementation plan for the membership management system.
 ## Pre-Development Setup
 
 ### Repository Setup
-- [ ] Re-authenticate gh CLI: `gh auth login -h github.com`
-- [ ] Create repo: `gh repo create peterdrier/nobodies-profiles --public`
-- [ ] Initialize with README, .gitignore (Python/Django)
+- [x] Re-authenticate gh CLI: `gh auth login -h github.com`
+- [x] Create repo: `gh repo create peterdrier/nobodies-profiles --public`
+- [x] Initialize with README, .gitignore (Python/Django)
 
 ### Legal Docs Repo
 - [ ] Create `nobodies-collective/legal` repo (or verify access)
@@ -28,60 +28,60 @@ Phased implementation plan for the membership management system.
 **Goal**: People can apply, board can review, approved members can log in.
 
 ### 1.1 Project Scaffold
-- [ ] Django 5.x project with settings split (base/local/production)
-- [ ] Custom User model in `accounts` app (email-based, no username)
-- [ ] **Run initial migration immediately after User model**
-- [ ] Docker Compose: web, db (postgres:16), redis
-- [ ] Environment variable configuration
-- [ ] Basic URL routing
+- [x] Django 5.x project with settings split (base/local/production)
+- [x] Custom User model in `accounts` app (email-based, no username)
+- [x] **Run initial migration immediately after User model**
+- [x] Docker Compose: web, db (postgres:16), redis
+- [x] Environment variable configuration
+- [x] Basic URL routing
 
 ### 1.2 Authentication
-- [ ] Install and configure django-allauth
-- [ ] Google OAuth provider setup
-- [ ] Login/logout views
-- [ ] Redirect unauthenticated users to login
-- [ ] Post-login redirect to dashboard
+- [x] Install and configure django-allauth
+- [x] Google OAuth provider setup
+- [x] Login/logout views
+- [x] Redirect unauthenticated users to login
+- [x] Post-login redirect to dashboard
 
 ### 1.3 Profile & Application Models
-- [ ] Profile model (linked to User)
-- [ ] Application model with FSM states (SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED)
-- [ ] ApplicationBatch model for grouping reviews
-- [ ] django-simple-history on both models
+- [x] Profile model (linked to User)
+- [x] Application model with FSM states (SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED)
+- [x] ApplicationBatch model for grouping reviews
+- [x] django-simple-history on both models
 
 ### 1.4 Application Form (Public)
-- [ ] Application form view (requires login)
-- [ ] Fields: legal name, preferred name, country, role requested, motivation, skills
-- [ ] GDPR consent checkbox (unchecked, required)
-- [ ] Form validation and submission
-- [ ] Create Application record on submit
+- [x] Application form view (requires login)
+- [x] Fields: legal name, preferred name, country, role requested, motivation, skills
+- [x] GDPR consent checkbox (unchecked, required)
+- [x] Form validation and submission
+- [x] Create Application record on submit
 
 ### 1.5 Board Review Interface
-- [ ] Board-only access (check is_staff or Board role)
-- [ ] List pending applications
-- [ ] Batch creation and assignment
-- [ ] Individual application detail view
-- [ ] Approve/reject actions with notes
-- [ ] On approve: create Profile + placeholder RoleAssignment
+- [x] Board-only access (check is_staff or Board role)
+- [x] List pending applications
+- [x] Batch creation and assignment
+- [x] Individual application detail view
+- [x] Approve/reject actions with notes
+- [x] On approve: create Profile + placeholder RoleAssignment
 
 ### 1.6 Member Dashboard (Basic)
-- [ ] Dashboard view showing status
-- [ ] For NONE: "Apply here" link
-- [ ] For PENDING: "Application under review"
-- [ ] For APPROVED+: Show profile info
+- [x] Dashboard view showing status
+- [x] For NONE: "Apply here" link
+- [x] For PENDING: "Application under review"
+- [x] For APPROVED+: Show profile info
 
 ### 1.7 Email Notifications
-- [ ] Email backend configuration (SMTP)
-- [ ] Template: application_received (to applicant)
-- [ ] Template: application_approved (to applicant)
-- [ ] Template: application_rejected (to applicant)
-- [ ] Celery task for async sending
-- [ ] Translations: es, en
+- [x] Email backend configuration (SMTP)
+- [x] Template: application_received (to applicant)
+- [x] Template: application_approved (to applicant)
+- [x] Template: application_rejected (to applicant)
+- [x] Celery task for async sending
+- [ ] Translations: es, en (strings wrapped, compilation pending)
 
 ### 1.8 Basic i18n
-- [ ] Django i18n setup (USE_I18N, LANGUAGES)
-- [ ] Language middleware
-- [ ] URL prefix pattern (/es/, /en/)
-- [ ] Wrap existing strings in {% trans %}
+- [x] Django i18n setup (USE_I18N, LANGUAGES)
+- [x] Language middleware
+- [x] URL prefix pattern (/es/, /en/)
+- [x] Wrap existing strings in {% trans %}
 - [ ] Compile message files
 
 ### Phase 1 Milestone Test
@@ -94,65 +94,65 @@ Phased implementation plan for the membership management system.
 **Goal**: Members must sign required documents before activation.
 
 ### 2.1 Document Models
-- [ ] LegalDocument model (slug, title, type, required flags)
-- [ ] DocumentVersion model (version, content, hash, git refs)
-- [ ] DocumentTranslation model (language, content)
-- [ ] ConsentRecord model (immutable)
-- [ ] ConsentRevocation model
+- [x] LegalDocument model (slug, title, type, required flags)
+- [x] DocumentVersion model (version, content, hash, git refs)
+- [x] DocumentTranslation model (language, content)
+- [x] ConsentRecord model (immutable)
+- [x] ConsentRevocation model
 
 ### 2.2 Git Sync Service
-- [ ] Service to fetch from `nobodies-collective/legal` repo
-- [ ] Parse document directories and metadata.json
-- [ ] Create/update DocumentVersion records
-- [ ] Store git commit SHA for provenance
-- [ ] Celery task: `sync_legal_documents` (daily schedule)
+- [x] Service to fetch from `nobodies-collective/legal` repo
+- [x] Parse document directories and metadata.json
+- [x] Create/update DocumentVersion records
+- [x] Store git commit SHA for provenance
+- [x] Celery task: `sync_legal_documents` (daily schedule)
 
 ### 2.3 Document Viewing UI
-- [ ] Document view page
-- [ ] Spanish content as primary
-- [ ] Language selector for translations
-- [ ] Clear disclaimer banner for translations
-- [ ] Responsive layout for reading
+- [x] Document view page
+- [x] Spanish content as primary
+- [x] Language selector for translations
+- [x] Clear disclaimer banner for translations
+- [x] Responsive layout for reading
 
 ### 2.4 Consent Workflow
-- [ ] List pending documents on dashboard
-- [ ] Consent form with explicit checkbox (unchecked)
-- [ ] Consent text includes version, date, Spanish acknowledgment
-- [ ] On submit: create ConsentRecord with IP, user agent, exact text
-- [ ] Mark consent as active
+- [x] List pending documents on dashboard
+- [x] Consent form with explicit checkbox (unchecked)
+- [x] Consent text includes version, date, Spanish acknowledgment
+- [x] On submit: create ConsentRecord with IP, user agent, exact text
+- [x] Mark consent as active
 
 ### 2.5 Status Gate Logic
-- [ ] Implement `Profile.membership_status` as computed property
-- [ ] Check: has active RoleAssignment?
-- [ ] Check: has active consent for all required documents?
-- [ ] Status only becomes ACTIVE when both true
-- [ ] Update dashboard to show APPROVED_PENDING_DOCUMENTS state
+- [x] Implement `Profile.membership_status` as computed property
+- [x] Check: has active RoleAssignment?
+- [x] Check: has active consent for all required documents?
+- [x] Status only becomes ACTIVE when both true
+- [x] Update dashboard to show APPROVED_PENDING_DOCUMENTS state
 
 ### 2.6 Board Document Management
-- [ ] Admin interface for LegalDocument CRUD
-- [ ] View document versions
-- [ ] Manual "publish new version" (syncs from git on demand)
-- [ ] Toggle requires_re_consent flag
-- [ ] Set re_consent_deadline
+- [x] Admin interface for LegalDocument CRUD
+- [x] View document versions
+- [x] Manual "publish new version" (syncs from git on demand)
+- [x] Toggle requires_re_consent flag
+- [x] Set re_consent_deadline
 
 ### 2.7 Re-consent Campaign
-- [ ] When new version with requires_re_consent published:
-  - [ ] Find profiles with active consent to previous version
-  - [ ] Set their consent.is_active = False
-  - [ ] Send notification email
-- [ ] Celery task: `send_consent_required_email`
-- [ ] Celery beat: `send_consent_reminders` (7d, 1d before deadline)
+- [x] When new version with requires_re_consent published:
+  - [x] Find profiles with active consent to previous version
+  - [x] Set their consent.is_active = False
+  - [x] Send notification email
+- [x] Celery task: `send_consent_required_email`
+- [x] Celery beat: `send_consent_reminders` (7d, 1d before deadline)
 
 ### 2.8 Consent Deadline Enforcement
-- [ ] Celery beat: `enforce_consent_deadlines`
-- [ ] Find members past deadline without new consent
-- [ ] Set status → RESTRICTED
-- [ ] Send `consent_overdue` email
+- [x] Celery beat: `enforce_consent_deadlines`
+- [x] Find members past deadline without new consent
+- [x] Set status → RESTRICTED
+- [ ] Send `consent_overdue` email (template pending)
 
 ### 2.9 Compliance Dashboard (Board)
-- [ ] View: who signed which document
-- [ ] Filter by document, version, status
-- [ ] Export to CSV
+- [x] View: who signed which document (via admin)
+- [x] Filter by document, version, status
+- [x] Export to CSV (via django-import-export)
 
 ### Phase 2 Milestone Test
 > Board publishes a Privacy Policy. New member sees it after approval, signs it, status becomes ACTIVE. Board publishes v2 with re-consent required. Member gets notified, signs new version, status remains ACTIVE. Another member misses deadline, status becomes RESTRICTED.
