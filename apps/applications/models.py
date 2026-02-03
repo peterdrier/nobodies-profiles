@@ -145,11 +145,24 @@ class Application(models.Model):
         help_text=_('Skills or experience you can contribute'),
     )
 
-    # Workflow - viewflow.fsm state machine
-    status = State(
-        ApplicationStatus,
+    # Workflow status - CharField for ORM queries
+    status = models.CharField(
+        _('status'),
+        max_length=50,
+        choices=ApplicationStatus.choices,
         default=ApplicationStatus.SUBMITTED,
     )
+
+    # FSM state machine for transitions
+    state = State(ApplicationStatus, default=ApplicationStatus.SUBMITTED)
+
+    @state.getter()
+    def _get_state(self):
+        return self.status
+
+    @state.setter()
+    def _set_state(self, value):
+        self.status = value
 
     batch = models.ForeignKey(
         ApplicationBatch,
@@ -201,7 +214,7 @@ class Application(models.Model):
 
     # FSM Transitions
 
-    @status.transition(
+    @state.transition(
         source=ApplicationStatus.SUBMITTED,
         target=ApplicationStatus.UNDER_REVIEW,
     )
@@ -210,7 +223,7 @@ class Application(models.Model):
         if reviewer:
             self.reviewed_by = reviewer
 
-    @status.transition(
+    @state.transition(
         source=ApplicationStatus.UNDER_REVIEW,
         target=ApplicationStatus.APPROVED,
     )
@@ -257,7 +270,7 @@ class Application(models.Model):
             notes=f"Approved via application #{self.pk}",
         )
 
-    @status.transition(
+    @state.transition(
         source=ApplicationStatus.UNDER_REVIEW,
         target=ApplicationStatus.REJECTED,
     )
