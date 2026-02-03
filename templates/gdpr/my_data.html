@@ -110,6 +110,47 @@
     </div>
     {% endif %}
 
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "Understanding Your GDPR Rights" %}</summary>
+            <div class="card-body pt-0">
+                <h3 class="h5">{% trans "What is GDPR?" %}</h3>
+                <p>{% trans "GDPR (General Data Protection Regulation) is a European law that gives you control over your personal data. As a member, you have specific rights:" %}</p>
+
+                <dl>
+                    <dt>{% trans "Right of Access (Article 15)" %}</dt>
+                    <dd>{% trans "You can request a copy of all personal data we store about you. The system generates a ZIP file containing everything in a readable format. You can request this once every 24 hours." %}</dd>
+
+                    <dt>{% trans "Right to Erasure (Article 17)" %}</dt>
+                    <dd>{% trans "You can request deletion of your account and personal data. This goes through board review to ensure proper handoff of any responsibilities. Once approved, your data is anonymized (not fully deleted, as we must keep some records for legal compliance)." %}</dd>
+
+                    <dt>{% trans "Right to Rectification (Article 16)" %}</dt>
+                    <dd>{% trans "You can update your information anytime through your profile page. For changes to your legal name, contact the Board." %}</dd>
+                </dl>
+
+                <h3 class="h5 mt-4">{% trans "Common Questions" %}</h3>
+                <dl>
+                    <dt>{% trans "What happens to my data export?" %}</dt>
+                    <dd>{% blocktrans with days=30 %}The export file is available for download for {{ days }} days, then automatically deleted from our servers for security.{% endblocktrans %}</dd>
+
+                    <dt>{% trans "Why does deletion require board review?" %}</dt>
+                    <dd>{% trans "To ensure any shared resources you manage are properly transferred and to verify your identity. This protects both you and the organization." %}</dd>
+
+                    <dt>{% trans "What data is kept after deletion?" %}</dt>
+                    <dd>{% trans "Only anonymized consent records (required by Spanish law to prove you agreed to documents). All personally identifiable information is removed." %}</dd>
+
+                    <dt>{% trans "Can I rejoin after deletion?" %}</dt>
+                    <dd>{% trans "Yes, but you would need to create a new account and go through the application process again." %}</dd>
+                </dl>
+
+                <p class="text-muted mt-3">
+                    {% trans "Questions about your data rights? Contact" %} <a href="mailto:board@nobodies.team">board@nobodies.team</a>
+                </p>
+            </div>
+        </details>
+    </div>
+
     <div class="actions mt-4">
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
     </div>

@@ -55,5 +55,38 @@
             <a href="{% url 'dashboard' %}" class="btn btn-primary">{% trans "Return to Dashboard" %}</a>
         </div>
     {% endif %}
+
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "Why do I need to sign documents?" %}</summary>
+            <div class="card-body pt-0">
+                <p>{% trans "As a Spanish nonprofit, we're legally required to have members agree to certain documents. This protects both you and the organization." %}</p>
+
+                <h4 class="h6">{% trans "Common Document Types" %}</h4>
+                <dl>
+                    <dt>{% trans "Privacy Policy" %}</dt>
+                    <dd>{% trans "Explains how we collect, use, and protect your personal data under GDPR." %}</dd>
+
+                    <dt>{% trans "Code of Conduct" %}</dt>
+                    <dd>{% trans "Our community standards and expectations for member behavior." %}</dd>
+
+                    <dt>{% trans "Internal Regulations" %}</dt>
+                    <dd>{% trans "Rules about how the organization operates, voting, and member rights." %}</dd>
+                </dl>
+
+                <h4 class="h6 mt-3">{% trans "Important Notes" %}</h4>
+                <ul>
+                    <li><strong>{% trans "Spanish is legally binding" %}</strong> - {% trans "As a Spanish organization, the Spanish version is the authoritative legal text. Translations are provided for convenience only." %}</li>
+                    <li><strong>{% trans "Re-consent" %}</strong> - {% trans "When documents change significantly, you may need to sign the new version. You'll be notified and given a deadline." %}</li>
+                    <li><strong>{% trans "Your records are permanent" %}</strong> - {% trans "We keep records of what you signed and when for legal compliance. You can view your consent history anytime." %}</li>
+                </ul>
+
+                <p class="text-muted mt-3">
+                    {% trans "Questions about a specific document? Contact" %} <a href="mailto:board@nobodies.team">board@nobodies.team</a>
+                </p>
+            </div>
+        </details>
+    </div>
 </div>
 {% endblock %}

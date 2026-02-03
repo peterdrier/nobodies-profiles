@@ -134,5 +134,45 @@
             </div>
         </div>
     </div>
+
+    <!-- Board Guidance -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "Board Guidance: GDPR Compliance" %}</summary>
+            <div class="card-body pt-0">
+                <h4 class="h6">{% trans "Your GDPR Responsibilities" %}</h4>
+                <p>{% trans "Under GDPR, members have the right to access and delete their personal data. As a Board member, you're responsible for:" %}</p>
+                <ul>
+                    <li>{% trans "Reviewing deletion requests within 30 days (legal requirement)" %}</li>
+                    <li>{% trans "Verifying the requester's identity" %}</li>
+                    <li>{% trans "Ensuring proper handoff of any resources they manage" %}</li>
+                    <li>{% trans "Documenting your decision" %}</li>
+                </ul>
+
+                <h4 class="h6 mt-3">{% trans "Deletion Request Workflow" %}</h4>
+                <ol>
+                    <li><strong>{% trans "Request Submitted" %}</strong> - {% trans "Member initiates request" %}</li>
+                    <li><strong>{% trans "Email Confirmation" %}</strong> - {% trans "Member confirms via email link (prevents accidental requests)" %}</li>
+                    <li><strong>{% trans "Under Review" %}</strong> - {% trans "Board reviews the request" %}</li>
+                    <li><strong>{% trans "Decision" %}</strong> - {% trans "Approve or deny with documented reason" %}</li>
+                    <li><strong>{% trans "Execution" %}</strong> - {% trans "System automatically anonymizes data if approved" %}</li>
+                </ol>
+
+                <h4 class="h6 mt-3">{% trans "When to Approve" %}</h4>
+                <p>{% trans "Approve if the member has confirmed their identity and there are no outstanding obligations (e.g., they're not the sole administrator of critical resources)." %}</p>
+
+                <h4 class="h6 mt-3">{% trans "When to Deny" %}</h4>
+                <ul>
+                    <li>{% trans "Legal obligations prevent deletion (rare)" %}</li>
+                    <li>{% trans "Need more time to transfer resources they manage" %}</li>
+                    <li>{% trans "Suspected fraudulent request" %}</li>
+                </ul>
+                <p class="text-muted">{% trans "Always document your reasoning. Denial can be challenged." %}</p>
+
+                <h4 class="h6 mt-3">{% trans "What Gets Anonymized" %}</h4>
+                <p>{% trans "Email becomes a placeholder, name becomes 'Deleted User', personal info is redacted. Consent records are preserved (legally required) but marked inactive." %}</p>
+            </div>
+        </details>
+    </div>
 </div>
 {% endblock %}

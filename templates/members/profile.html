@@ -63,6 +63,41 @@
     <a href="{% url 'applications:apply' %}" class="btn btn-primary">{% trans "Apply for Membership" %}</a>
     {% endif %}
 
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "About Your Profile" %}</summary>
+            <div class="card-body pt-0">
+                <h4 class="h6">{% trans "What's stored here?" %}</h4>
+                <p>{% trans "Your profile contains your membership information: legal name, country of residence, and membership history. This is separate from your login account, which stores email and password." %}</p>
+
+                <h4 class="h6 mt-3">{% trans "Making Changes" %}</h4>
+                <dl>
+                    <dt>{% trans "Display Name & Language" %}</dt>
+                    <dd>{% trans "You can change these in your account settings (coming soon) or contact the Board." %}</dd>
+
+                    <dt>{% trans "Legal Name" %}</dt>
+                    <dd>{% trans "Must match your government ID. To change this (e.g., after a name change), contact the Board with documentation." %}</dd>
+
+                    <dt>{% trans "Country of Residence" %}</dt>
+                    <dd>{% trans "Contact the Board if you've moved to a different country." %}</dd>
+
+                    <dt>{% trans "Email Address" %}</dt>
+                    <dd>{% trans "Your email is tied to your Google account for login. To use a different email, contact the Board." %}</dd>
+                </dl>
+
+                {% if profile_tags or has_self_assignable_tags %}
+                <h4 class="h6 mt-3">{% trans "About Tags" %}</h4>
+                <p>{% trans "Tags are like badges that show your involvement and interests. Some tags (like 'Camp Lead') are assigned by the organization. Others you can add yourself to express your interests or skills." %}</p>
+                {% endif %}
+
+                <p class="text-muted mt-3">
+                    {% trans "Need to update something? Contact" %} <a href="mailto:board@nobodies.team">board@nobodies.team</a>
+                </p>
+            </div>
+        </details>
+    </div>
+
     <div class="actions mt-4">
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
     </div>

@@ -167,5 +167,47 @@
         <p>{% trans "Manage your personal data in accordance with GDPR." %}</p>
         <a href="{% url 'gdpr:my_data' %}" class="btn btn-secondary">{% trans "Manage My Data" %}</a>
     </div>
+
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold;">{% trans "Need Help? Click here for explanations" %}</summary>
+            <div class="help-content mt-3">
+                <h3>{% trans "Understanding Your Status" %}</h3>
+                <dl>
+                    <dt>{% trans "Active Member" %}</dt>
+                    <dd>{% trans "You're a full member with all benefits. Your role will need renewal every 2 years." %}</dd>
+
+                    <dt>{% trans "Approved - Documents Required" %}</dt>
+                    <dd>{% trans "Great news! You've been approved. Just sign the required documents (like our Privacy Policy) to complete activation." %}</dd>
+
+                    <dt>{% trans "Restricted" %}</dt>
+                    <dd>{% trans "We've updated some documents and need you to review and sign the new versions. Your full access will be restored once you do." %}</dd>
+
+                    <dt>{% trans "Application Pending" %}</dt>
+                    <dd>{% trans "The Board is reviewing your application. This usually takes a few days." %}</dd>
+
+                    <dt>{% trans "Expired" %}</dt>
+                    <dd>{% trans "Your 2-year membership period has ended. Contact the Board to discuss renewal." %}</dd>
+                </dl>
+
+                <h3>{% trans "Common Questions" %}</h3>
+                <dl>
+                    <dt>{% trans "How do I update my information?" %}</dt>
+                    <dd>{% trans "Click 'Edit Profile' above, or contact the Board for changes to your legal name." %}</dd>
+
+                    <dt>{% trans "What is GDPR?" %}</dt>
+                    <dd>{% trans "GDPR is European data protection law. It gives you rights to access, download, and delete your personal data." %}</dd>
+
+                    <dt>{% trans "How do I leave the organization?" %}</dt>
+                    <dd>{% trans "Go to 'Manage My Data' and request account deletion. The Board will process your request." %}</dd>
+                </dl>
+
+                <p class="text-muted mt-3">
+                    {% trans "Still have questions? Contact us at" %} <a href="mailto:board@nobodies.team">board@nobodies.team</a>
+                </p>
+            </div>
+        </details>
+    </div>
 </div>
 {% endblock %}

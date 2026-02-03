@@ -11,6 +11,9 @@ from django.views.generic import TemplateView
 
 from apps.members.views import DashboardView
 
+# Import admin customizations
+import config.admin  # noqa: F401
+
 urlpatterns = [
     # Health check (no i18n prefix)
     path('health/', TemplateView.as_view(template_name='health.html'), name='health'),

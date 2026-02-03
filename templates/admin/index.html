@@ -1,0 +1,30 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+<div id="admin-tips" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; margin-bottom: 20px;">
+    <h2 style="margin-top: 0; font-size: 16px; color: #495057;">{% trans "Quick Tips" %}</h2>
+    <ul style="margin-bottom: 0; padding-left: 20px; color: #6c757d;">
+        <li><strong>{% trans "Applications" %}:</strong> {% trans "Review pending applications under Applications > Applications. Use bulk actions to approve/reject." %}</li>
+        <li><strong>{% trans "Member Status" %}:</strong> {% trans "Status is computed automatically. To change it, modify role assignments or document consents." %}</li>
+        <li><strong>{% trans "Documents" %}:</strong> {% trans "Spanish content is legally binding. Check 'Requires re-consent' when updating documents that members must re-sign." %}</li>
+        <li><strong>{% trans "GDPR" %}:</strong> {% trans "Check GDPR > Data Deletion Requests regularly for pending deletion requests that need board review." %}</li>
+    </ul>
+    <p style="margin-bottom: 0; margin-top: 10px; font-size: 12px;">
+        <a href="/docs/ADMIN_GUIDE.md" target="_blank">{% trans "Full Admin Guide" %}</a> |
+        <a href="/docs/QUICK_REFERENCE.md" target="_blank">{% trans "Quick Reference" %}</a>
+    </p>
+</div>
+
+{{ block.super }}
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<div class="module" style="margin-top: 15px;">
+    <h2>{% trans "Need Help?" %}</h2>
+    <p style="padding: 0 10px; font-size: 12px; color: #666;">
+        {% trans "See the Admin Guide in /docs/ for detailed instructions on managing members, applications, documents, and GDPR requests." %}
+    </p>
+</div>
+{% endblock %}

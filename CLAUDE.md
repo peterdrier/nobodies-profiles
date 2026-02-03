@@ -215,3 +215,31 @@ labels:
 - Future: French (fr), German (de), Portuguese (pt)
 - All strings use `{% trans %}` in templates, `gettext_lazy()` in Python
 - URL prefix pattern: `/es/dashboard/`, `/en/dashboard/`
+
+## Documentation
+
+### For Developers
+- `CLAUDE.md` - This file, AI assistant instructions
+- `TODO.md` - Outstanding tasks from code review (security, cleanup, simplification)
+- `docs/DEVELOPMENT_PLAN.md` - Original development roadmap
+
+### For Administrators
+- `docs/ADMIN_GUIDE.md` - Comprehensive guide for system administrators
+- `docs/QUICK_REFERENCE.md` - Quick reference card for common tasks
+- `docs/GLOSSARY.md` - Plain-language glossary of terms
+
+### In-App Help
+All member-facing pages include collapsible help sections explaining:
+- Status meanings and next steps
+- GDPR rights and data management
+- Document signing requirements
+- Application process
+
+## Outstanding Work
+
+See `TODO.md` for prioritized list of:
+- **HIGH**: Security fixes (XSS, SECRET_KEY)
+- **MEDIUM**: Security improvements (OAuth, GDPR IP anonymization, CSP)
+- **Code Cleanup**: Deduplication, logging consistency
+- **Simplification**: FSM approach, history tracking scope
+- **Performance**: QuerySet optimizations

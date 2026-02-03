@@ -7,6 +7,16 @@
 <div class="container">
     <h1>{% trans "Review Deletion Request" %}</h1>
 
+    <!-- Review Checklist -->
+    <div class="alert alert-info mb-4">
+        <strong>{% trans "Before deciding, please verify:" %}</strong>
+        <ul class="mb-0 mt-2">
+            <li>{% trans "The request was confirmed via email (verified by system)" %}</li>
+            <li>{% trans "The member doesn't manage critical shared resources that need transfer" %}</li>
+            <li>{% trans "There are no outstanding obligations or disputes" %}</li>
+        </ul>
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-4">

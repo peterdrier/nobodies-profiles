@@ -84,6 +84,43 @@
         {% endif %}
     </div>
 
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "Understanding the Application Process" %}</summary>
+            <div class="card-body pt-0">
+                <h4 class="h6">{% trans "Application Stages" %}</h4>
+                <ol>
+                    <li><strong>{% trans "Submitted" %}</strong> - {% trans "Your application has been received and is in the queue." %}</li>
+                    <li><strong>{% trans "Under Review" %}</strong> - {% trans "A Board member is actively reviewing your application." %}</li>
+                    <li><strong>{% trans "Decision" %}</strong> - {% trans "You'll receive an email with the outcome." %}</li>
+                </ol>
+
+                <h4 class="h6 mt-3">{% trans "If Approved" %}</h4>
+                <p>{% trans "You'll need to sign required legal documents (Privacy Policy, etc.) to activate your membership. Until you sign, your status will be 'Approved - Documents Required'." %}</p>
+
+                <h4 class="h6 mt-3">{% trans "If Not Approved" %}</h4>
+                <p>{% trans "Don't be discouraged. You can apply again in the future. The Board may have provided notes explaining the decision. Feel free to contact us with questions." %}</p>
+
+                <h4 class="h6 mt-3">{% trans "Common Questions" %}</h4>
+                <dl>
+                    <dt>{% trans "How long does review take?" %}</dt>
+                    <dd>{% trans "The Board reviews applications regularly, typically within 1-2 weeks. Complex cases may take longer." %}</dd>
+
+                    <dt>{% trans "Can I update my application?" %}</dt>
+                    <dd>{% trans "Contact the Board if you need to correct information in a pending application." %}</dd>
+
+                    <dt>{% trans "What are the membership types?" %}</dt>
+                    <dd>{% trans "Colaborador (volunteer/collaborator) and Asociado (full member with voting rights). The Board determines which fits your involvement." %}</dd>
+                </dl>
+
+                <p class="text-muted mt-3">
+                    {% trans "Questions? Contact" %} <a href="mailto:board@nobodies.team">board@nobodies.team</a>
+                </p>
+            </div>
+        </details>
+    </div>
+
     <div class="actions mt-4">
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
     </div>

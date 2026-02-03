@@ -59,5 +59,40 @@
             </div>
         </form>
     </div>
+
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "About Tags" %}</summary>
+            <div class="card-body pt-0">
+                <p>{% trans "Tags are like badges that appear on your profile. They help others in the community learn about you and find people with similar interests or skills." %}</p>
+
+                <h4 class="h6">{% trans "Tag Categories" %}</h4>
+                <dl>
+                    <dt>{% trans "Event" %}</dt>
+                    <dd>{% trans "Related to events you've attended or organized (e.g., 'Camp Lead', 'Freecamper')." %}</dd>
+
+                    <dt>{% trans "Skill" %}</dt>
+                    <dd>{% trans "Professional or hobby skills you have (e.g., 'Photography', 'Web Development')." %}</dd>
+
+                    <dt>{% trans "Interest" %}</dt>
+                    <dd>{% trans "Things you're interested in or want to learn about." %}</dd>
+
+                    <dt>{% trans "Recognition" %}</dt>
+                    <dd>{% trans "Special recognition or awards (usually assigned by administrators)." %}</dd>
+                </dl>
+
+                <h4 class="h6 mt-3">{% trans "Two Types of Tags" %}</h4>
+                <ul>
+                    <li><strong>{% trans "Self-assignable" %}</strong> - {% trans "You can add or remove these yourself anytime." %}</li>
+                    <li><strong>{% trans "Admin-assigned" %}</strong> - {% trans "These are given by the organization to recognize specific roles or achievements." %}</li>
+                </ul>
+
+                <p class="text-muted mt-3">
+                    {% trans "Tags don't affect your membership or permissions - they're purely for identity and community building." %}
+                </p>
+            </div>
+        </details>
+    </div>
 </div>
 {% endblock %}

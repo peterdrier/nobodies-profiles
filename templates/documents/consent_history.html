@@ -62,6 +62,39 @@
         <p>{% trans "You haven't signed any documents yet." %}</p>
     {% endif %}
 
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <details>
+            <summary style="cursor: pointer; font-weight: bold; padding: 15px;">{% trans "Understanding Your Consent History" %}</summary>
+            <div class="card-body pt-0">
+                <p>{% trans "This page serves as your permanent record of documents you've agreed to. We're legally required to keep this information." %}</p>
+
+                <h4 class="h6">{% trans "Status Meanings" %}</h4>
+                <dl>
+                    <dt><span class="badge badge-success">{% trans "Active" %}</span></dt>
+                    <dd>{% trans "This is the current version of the document you've signed. It's currently in effect." %}</dd>
+
+                    <dt><span class="badge badge-secondary">{% trans "Superseded" %}</span></dt>
+                    <dd>{% trans "You signed this older version, but have since signed a newer version. The record is kept for history." %}</dd>
+                </dl>
+
+                <h4 class="h6 mt-3">{% trans "Why keep these records?" %}</h4>
+                <ul>
+                    <li>{% trans "Legal requirement: We must prove you agreed to our policies." %}</li>
+                    <li>{% trans "Your protection: You have proof of exactly what you agreed to and when." %}</li>
+                    <li>{% trans "Transparency: You can always see the document text you signed." %}</li>
+                </ul>
+
+                <h4 class="h6 mt-3">{% trans "What's recorded?" %}</h4>
+                <p>{% trans "Each consent record includes: the exact document version, timestamp, your IP address at the time, and the language you viewed it in (though Spanish is legally binding)." %}</p>
+
+                <p class="text-muted mt-3">
+                    {% trans "Questions about your consent records? Contact" %} <a href="mailto:board@nobodies.team">board@nobodies.team</a>
+                </p>
+            </div>
+        </details>
+    </div>
+
     <div class="actions mt-4">
         <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
     </div>
