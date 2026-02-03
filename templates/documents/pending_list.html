@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Documents Requiring Signature" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Documents Requiring Your Signature" %}</h1>
+
+    {% if pending_documents %}
+        <p class="intro">
+            {% blocktrans %}
+            Please review and sign the following documents to complete your membership activation.
+            All documents are presented in Spanish (the legally binding version) with optional
+            reference translations available.
+            {% endblocktrans %}
+        </p>
+
+        <div class="document-list">
+            {% for item in pending_documents %}
+                <div class="document-card">
+                    <div class="document-info">
+                        <h2>{{ item.document.title }}</h2>
+                        <p class="document-meta">
+                            {% trans "Version" %}: {{ item.version.version_number }} |
+                            {% trans "Effective" %}: {{ item.version.effective_date|date:"F j, Y" }}
+                        </p>
+                        {% if item.document.description %}
+                            <p class="document-description">{{ item.document.description }}</p>
+                        {% endif %}
+
+                        {% if item.version.re_consent_deadline %}
+                            <p class="deadline-warning">
+                                {% blocktrans with deadline=item.version.re_consent_deadline|date:"F j, Y" %}
+                                Please sign by {{ deadline }}
+                                {% endblocktrans %}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="document-actions">
+                        <a href="{% url 'documents:detail' item.document.slug %}" class="btn btn-secondary">
+                            {% trans "Read Document" %}
+                        </a>
+                        <a href="{% url 'documents:consent' item.document.slug %}" class="btn btn-primary">
+                            {% trans "Review & Sign" %}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-documents">
+            <p>{% trans "You have signed all required documents. Thank you!" %}</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">{% trans "Return to Dashboard" %}</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sign Document" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container consent-page">
+    <h1>{% trans "Sign Document" %}</h1>
+
+    <div class="document-summary">
+        <h2>{{ document.title }}</h2>
+        <p class="version-info">
+            {% trans "Version" %} {{ version.version_number }} |
+            {% trans "Effective" %} {{ version.effective_date|date:"F j, Y" }}
+        </p>
+    </div>
+
+    <div class="consent-notice">
+        <h3>{% trans "Before you sign" %}</h3>
+        <ul>
+            <li>{% trans "Please ensure you have read and understood the document." %}</li>
+            <li>{% trans "The Spanish version is the legally binding document." %}</li>
+            <li>{% trans "Your consent will be recorded with timestamp and IP address for legal compliance." %}</li>
+            <li>{% trans "You can view your consent history at any time from your dashboard." %}</li>
+        </ul>
+
+        <p>
+            <a href="{% url 'documents:detail' document.slug %}?lang={{ language_viewed }}" target="_blank">
+                {% trans "Read the full document" %}
+            </a>
+        </p>
+    </div>
+
+    <form method="post" class="consent-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                {% for error in form.non_field_errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="consent-checkbox-container">
+            <label class="consent-label">
+                {{ form.consent }}
+                <span class="consent-text">{{ form.consent.label }}</span>
+            </label>
+            {% if form.consent.errors %}
+                <span class="field-error">{{ form.consent.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {% trans "I Agree - Sign Document" %}
+            </button>
+            <a href="{% url 'documents:pending' %}" class="btn btn-secondary">
+                {% trans "Cancel" %}
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

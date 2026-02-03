@@ -140,12 +140,24 @@
     </div>
     {% endif %}
 
-    <!-- Pending Documents Section (placeholder for Phase 2) -->
+    <!-- Pending Documents Section -->
     {% if membership_status == 'APPROVED_PENDING_DOCUMENTS' or membership_status == 'RESTRICTED' %}
     <div class="card mt-4" id="documents">
         <h2>{% trans "Required Documents" %}</h2>
-        <p>{% trans "Document signing functionality coming soon." %}</p>
-        <!-- Will be populated in Phase 2 -->
+        <p>
+            {% trans "Please review and sign the following documents to activate your membership." %}
+        </p>
+        <a href="{% url 'documents:pending' %}" class="btn btn-primary">
+            {% trans "View & Sign Documents" %}
+        </a>
+    </div>
+    {% elif membership_status == 'ACTIVE' %}
+    <div class="card mt-4">
+        <h2>{% trans "Documents" %}</h2>
+        <p>{% trans "All required documents have been signed." %}</p>
+        <a href="{% url 'documents:history' %}" class="btn btn-secondary">
+            {% trans "View Consent History" %}
+        </a>
     </div>
     {% endif %}
 

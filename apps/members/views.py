@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
 from apps.applications.models import Application, ApplicationStatus
+from apps.documents.models import get_pending_documents_for_profile
 from apps.members.models import MembershipStatus
 
 
@@ -41,8 +42,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             # Get team memberships (for Phase 3)
             # context['teams'] = profile.team_memberships.filter(is_active=True)
+
+            # Get pending documents
+            context['pending_documents'] = get_pending_documents_for_profile(profile)
+            context['pending_documents_count'] = len(context['pending_documents'])
         else:
             context['membership_status'] = MembershipStatus.NONE
+            context['pending_documents'] = []
+            context['pending_documents_count'] = 0
 
         # Get pending application if any
         pending_application = Application.objects.filter(

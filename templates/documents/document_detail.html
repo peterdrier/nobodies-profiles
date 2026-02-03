@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ document.title }} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container document-view">
+    <div class="document-header">
+        <h1>{{ document.title }}</h1>
+        <p class="version-info">
+            {% trans "Version" %} {{ version.version_number }} |
+            {% trans "Effective" %} {{ version.effective_date|date:"F j, Y" }}
+        </p>
+    </div>
+
+    <!-- Language selector -->
+    <div class="language-selector">
+        <label>{% trans "View in:" %}</label>
+        {% for code, name in available_languages %}
+            {% if code == current_language %}
+                <span class="lang-option active">{{ name }}</span>
+            {% else %}
+                <a href="?lang={{ code }}" class="lang-option">{{ name }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Translation warning -->
+    {% if is_translation %}
+        <div class="translation-warning">
+            <strong>{% trans "Important:" %}</strong>
+            {% trans "This is a reference translation only. The Spanish version is the legally binding document." %}
+            {% if is_machine_translated %}
+                {% trans "This translation was generated automatically and may contain errors." %}
+            {% endif %}
+            <a href="?lang=es">{% trans "View Spanish version" %}</a>
+        </div>
+    {% endif %}
+
+    <!-- Document content -->
+    <div class="document-content">
+        {{ content|safe }}
+    </div>
+
+    <!-- Actions -->
+    <div class="document-actions mt-4">
+        {% if has_consented %}
+            <div class="already-signed">
+                <span class="badge badge-success">{% trans "Signed" %}</span>
+                <span>{% trans "You have already signed this document." %}</span>
+            </div>
+        {% elif is_required %}
+            <a href="{% url 'documents:consent' document.slug %}?lang={{ current_language }}" class="btn btn-primary">
+                {% trans "Proceed to Sign" %}
+            </a>
+        {% endif %}
+
+        <a href="{% url 'documents:pending' %}" class="btn btn-secondary">
+            {% trans "Back to Documents" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

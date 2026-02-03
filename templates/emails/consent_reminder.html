@@ -1,0 +1,35 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Reminder: Documents Require Your Signature" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<p>
+    {% blocktrans with days=days_until_deadline %}
+    This is a reminder that you have {{ days }} days left to sign required documents.
+    {% endblocktrans %}
+</p>
+
+<p>{% trans "The following documents require your signature:" %}</p>
+
+<ul>
+{% for item in pending_documents %}
+    <li>
+        <strong>{{ item.document.title }}</strong> (v{{ item.version.version_number }})
+        {% if item.version.re_consent_deadline %}
+        - {% trans "Due by" %} {{ item.version.re_consent_deadline|date:"F j, Y" }}
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+
+<p>{% trans "Please log in to review and sign these documents. Failure to sign by the deadline may result in restricted access to Nobodies Collective resources." %}</p>
+
+<p style="text-align: center;">
+    <a href="#" class="button">{% trans "Sign Documents Now" %}</a>
+</p>
+
+<p>{% trans "Thank you," %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}

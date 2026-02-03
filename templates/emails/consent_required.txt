@@ -1,0 +1,24 @@
+{% load i18n %}{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% trans "A document that you previously signed has been updated and requires your consent again." %}
+
+{% trans "Document:" %} {{ document.title }}
+{% trans "Version:" %} {{ version.version_number }}
+{% trans "Effective Date:" %} {{ version.effective_date|date:"F j, Y" }}
+{% if version.re_consent_deadline %}{% trans "Please sign by:" %} {{ version.re_consent_deadline|date:"F j, Y" }}{% endif %}
+
+{% if version.changelog %}
+{% trans "What changed:" %}
+{{ version.changelog }}
+{% endif %}
+
+{% trans "Please log in to review and sign this document. Your membership access may be affected until you sign the updated document." %}
+
+{% trans "Thank you for your continued participation in Nobodies Collective." %}
+
+{% trans "Best regards," %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}

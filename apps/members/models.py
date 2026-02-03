@@ -124,21 +124,14 @@ class Profile(models.Model):
         return MembershipStatus.ACTIVE
 
     def _has_all_required_consents(self) -> bool:
-        """
-        Check if profile has all required document consents.
-        Placeholder - will be implemented in Phase 2.
-        """
-        # TODO: Implement when documents app is created
-        # For now, return True to allow testing
-        return True
+        """Check if profile has all required document consents."""
+        from apps.documents.models import has_all_required_consents
+        return has_all_required_consents(self)
 
     def _has_overdue_reconsent(self) -> bool:
-        """
-        Check if profile has any overdue re-consent deadlines.
-        Placeholder - will be implemented in Phase 2.
-        """
-        # TODO: Implement when documents app is created
-        return False
+        """Check if profile has any overdue re-consent deadlines."""
+        from apps.documents.models import has_overdue_reconsent
+        return has_overdue_reconsent(self)
 
     @property
     def current_role(self) -> str | None:

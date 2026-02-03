@@ -1,0 +1,34 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Document Requires Your Signature" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<p>{% trans "A document that you previously signed has been updated and requires your consent again." %}</p>
+
+<div class="highlight">
+    <strong>{% trans "Document:" %}</strong> {{ document.title }}<br>
+    <strong>{% trans "Version:" %}</strong> {{ version.version_number }}<br>
+    <strong>{% trans "Effective Date:" %}</strong> {{ version.effective_date|date:"F j, Y" }}
+    {% if version.re_consent_deadline %}
+    <br><strong>{% trans "Please sign by:" %}</strong> {{ version.re_consent_deadline|date:"F j, Y" }}
+    {% endif %}
+</div>
+
+{% if version.changelog %}
+<p><strong>{% trans "What changed:" %}</strong></p>
+<p>{{ version.changelog }}</p>
+{% endif %}
+
+<p>{% trans "Please log in to review and sign this document. Your membership access may be affected until you sign the updated document." %}</p>
+
+<p style="text-align: center;">
+    <a href="#" class="button">{% trans "Review & Sign Document" %}</a>
+</p>
+
+<p>{% trans "Thank you for your continued participation in Nobodies Collective." %}</p>
+
+<p>{% trans "Best regards," %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}

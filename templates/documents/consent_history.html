@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Consent History" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "My Consent History" %}</h1>
+
+    <p class="intro">
+        {% trans "This page shows all documents you have signed, along with the date and time of your consent." %}
+    </p>
+
+    {% if consents %}
+        <table class="consent-history-table">
+            <thead>
+                <tr>
+                    <th>{% trans "Document" %}</th>
+                    <th>{% trans "Version" %}</th>
+                    <th>{% trans "Signed On" %}</th>
+                    <th>{% trans "Status" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consent in consents %}
+                <tr class="{% if not consent.is_active %}inactive{% endif %}">
+                    <td>
+                        <a href="{% url 'documents:detail' consent.document_version.document.slug %}">
+                            {{ consent.document_version.document.title }}
+                        </a>
+                    </td>
+                    <td>v{{ consent.document_version.version_number }}</td>
+                    <td>{{ consent.consented_at|date:"F j, Y, g:i a" }}</td>
+                    <td>
+                        {% if consent.is_active %}
+                            <span class="badge badge-success">{% trans "Active" %}</span>
+                        {% else %}
+                            <span class="badge badge-secondary">{% trans "Superseded" %}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&laquo; {% trans "Previous" %}</a>
+            {% endif %}
+            <span class="current">
+                {% blocktrans with num=page_obj.number total=page_obj.paginator.num_pages %}
+                Page {{ num }} of {{ total }}
+                {% endblocktrans %}
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">{% trans "Next" %} &raquo;</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+    {% else %}
+        <p>{% trans "You haven't signed any documents yet." %}</p>
+    {% endif %}
+
+    <div class="actions mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% load i18n %}{% blocktrans with name=profile.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% blocktrans with days=days_until_deadline %}This is a reminder that you have {{ days }} days left to sign required documents.{% endblocktrans %}
+
+{% trans "The following documents require your signature:" %}
+
+{% for item in pending_documents %}
+- {{ item.document.title }} (v{{ item.version.version_number }}){% if item.version.re_consent_deadline %} - {% trans "Due by" %} {{ item.version.re_consent_deadline|date:"F j, Y" }}{% endif %}
+{% endfor %}
+
+{% trans "Please log in to review and sign these documents. Failure to sign by the deadline may result in restricted access to Nobodies Collective resources." %}
+
+{% trans "Thank you," %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}
