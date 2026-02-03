@@ -1,0 +1,35 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Approved" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=application.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<p style="font-size: 18px; color: #28a745;">
+    <strong>{% trans "Congratulations! Your application has been approved!" %}</strong>
+</p>
+
+<p>{% trans "We are pleased to welcome you to Nobodies Collective." %}</p>
+
+<div class="highlight">
+    <strong>{% trans "Membership Details:" %}</strong>
+    <ul>
+        <li>{% trans "Role:" %} {{ application.get_role_requested_display }}</li>
+        <li>{% trans "Approved:" %} {{ application.reviewed_at|date:"F j, Y" }}</li>
+    </ul>
+</div>
+
+<p><strong>{% trans "Next Steps:" %}</strong></p>
+<p>{% trans "Before your membership is fully activated, you need to review and sign some required documents. Please log in to your account to complete this process." %}</p>
+
+<p style="text-align: center;">
+    <a href="#" class="button">{% trans "Log In to Continue" %}</a>
+</p>
+
+<p>{% trans "Once you've signed all required documents, your membership will be activated and you'll receive access to our resources." %}</p>
+
+<p>{% trans "If you have any questions, please don't hesitate to reach out to the Board." %}</p>
+
+<p>{% trans "Welcome to the community!" %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}

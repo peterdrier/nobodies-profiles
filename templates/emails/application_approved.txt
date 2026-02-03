@@ -1,0 +1,23 @@
+{% load i18n %}{% blocktrans with name=application.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% trans "Congratulations! Your application has been approved!" %}
+
+{% trans "We are pleased to welcome you to Nobodies Collective." %}
+
+{% trans "Membership Details:" %}
+- {% trans "Role:" %} {{ application.get_role_requested_display }}
+- {% trans "Approved:" %} {{ application.reviewed_at|date:"F j, Y" }}
+
+{% trans "Next Steps:" %}
+{% trans "Before your membership is fully activated, you need to review and sign some required documents. Please log in to your account to complete this process." %}
+
+{% trans "Once you've signed all required documents, your membership will be activated and you'll receive access to our resources." %}
+
+{% trans "If you have any questions, please don't hesitate to reach out to the Board." %}
+
+{% trans "Welcome to the community!" %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}

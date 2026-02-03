@@ -1,0 +1,23 @@
+{% load i18n %}{% blocktrans with name=application.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% trans "Thank you for your interest in joining Nobodies Collective." %}
+
+{% trans "After careful consideration, the Board has decided not to approve your application at this time." %}
+
+{% if application.review_notes %}
+{% trans "Notes from the Board:" %}
+{{ application.review_notes }}
+{% endif %}
+
+{% trans "This decision does not prevent you from applying again in the future. If you believe there has been a misunderstanding or if your circumstances have changed, you are welcome to submit a new application." %}
+
+{% trans "If you have questions about this decision, you may contact the Board for more information." %}
+
+{% trans "We appreciate your understanding and wish you well." %}
+
+{% trans "Best regards," %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}

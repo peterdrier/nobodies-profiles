@@ -1,0 +1,32 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Received" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=application.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<p>{% trans "Thank you for submitting your application to join Nobodies Collective!" %}</p>
+
+<p>{% trans "We have received your application and it is now in our queue for review by the Board." %}</p>
+
+<div class="highlight">
+    <strong>{% trans "Application Details:" %}</strong>
+    <ul>
+        <li>{% trans "Submitted:" %} {{ application.submitted_at|date:"F j, Y" }}</li>
+        <li>{% trans "Membership Type:" %} {{ application.get_role_requested_display }}</li>
+        <li>{% trans "Status:" %} {% trans "Pending Review" %}</li>
+    </ul>
+</div>
+
+<p>{% trans "What happens next:" %}</p>
+<ol>
+    <li>{% trans "Our Board will review your application." %}</li>
+    <li>{% trans "You will receive a response within 30 days (as per our statutes)." %}</li>
+    <li>{% trans "If approved, you'll be asked to sign some documents to complete your membership." %}</li>
+</ol>
+
+<p>{% trans "You can check the status of your application at any time by logging into your account." %}</p>
+
+<p>{% trans "Best regards," %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Update" %}{% endblock %}
+
+{% block content %}
+<p>{% blocktrans with name=application.legal_name %}Dear {{ name }},{% endblocktrans %}</p>
+
+<p>{% trans "Thank you for your interest in joining Nobodies Collective." %}</p>
+
+<p>{% trans "After careful consideration, the Board has decided not to approve your application at this time." %}</p>
+
+{% if application.review_notes %}
+<div class="highlight">
+    <strong>{% trans "Notes from the Board:" %}</strong>
+    <p>{{ application.review_notes }}</p>
+</div>
+{% endif %}
+
+<p>{% trans "This decision does not prevent you from applying again in the future. If you believe there has been a misunderstanding or if your circumstances have changed, you are welcome to submit a new application." %}</p>
+
+<p>{% trans "If you have questions about this decision, you may contact the Board for more information." %}</p>
+
+<p>{% trans "We appreciate your understanding and wish you well." %}</p>
+
+<p>{% trans "Best regards," %}<br>{% trans "The Nobodies Collective Team" %}</p>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% load i18n %}{% blocktrans with name=application.legal_name %}Dear {{ name }},{% endblocktrans %}
+
+{% trans "Thank you for submitting your application to join Nobodies Collective!" %}
+
+{% trans "We have received your application and it is now in our queue for review by the Board." %}
+
+{% trans "Application Details:" %}
+- {% trans "Submitted:" %} {{ application.submitted_at|date:"F j, Y" }}
+- {% trans "Membership Type:" %} {{ application.get_role_requested_display }}
+- {% trans "Status:" %} {% trans "Pending Review" %}
+
+{% trans "What happens next:" %}
+1. {% trans "Our Board will review your application." %}
+2. {% trans "You will receive a response within 30 days (as per our statutes)." %}
+3. {% trans "If approved, you'll be asked to sign some documents to complete your membership." %}
+
+{% trans "You can check the status of your application at any time by logging into your account." %}
+
+{% trans "Best regards," %}
+{% trans "The Nobodies Collective Team" %}
+
+---
+Asociación Nobodies Collective
+{% trans "This is an automated message. Please do not reply directly to this email." %}
