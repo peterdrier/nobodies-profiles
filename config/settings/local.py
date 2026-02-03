@@ -5,7 +5,8 @@ from .base import *  # noqa: F401, F403
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+# Extend ALLOWED_HOSTS from base.py (reads from DJANGO_ALLOWED_HOSTS env var)
+ALLOWED_HOSTS += ['0.0.0.0']  # noqa: F405
 
 # Debug toolbar
 INSTALLED_APPS += ['debug_toolbar']  # noqa: F405
@@ -17,3 +18,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Disable whitenoise manifest storage in development
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# Trust X-Forwarded-Proto from traefik (so Django knows it's HTTPS)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

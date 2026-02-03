@@ -14,12 +14,14 @@ from apps.members.views import DashboardView
 urlpatterns = [
     # Health check (no i18n prefix)
     path('health/', TemplateView.as_view(template_name='health.html'), name='health'),
+
+    # Auth URLs without language prefix (for stable OAuth callback)
+    path('accounts/', include('allauth.urls')),
 ]
 
 # i18n URL patterns
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
 
     # Dashboard (main landing page after login)
     path('dashboard/', DashboardView.as_view(), name='dashboard'),

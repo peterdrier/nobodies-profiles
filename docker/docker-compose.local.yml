@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=nobodies
     ports:
-      - "5433:5432"  # Use 5433 to avoid conflicts with other postgres instances
+      - "5433:5432"
     volumes:
       - postgres_data_local:/var/lib/postgresql/data
     healthcheck:
@@ -19,18 +19,107 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - nobodies
 
   redis:
     image: redis:7-alpine
     container_name: nobodies-redis-local
     restart: unless-stopped
     ports:
-      - "6380:6379"  # Use 6380 to avoid conflicts
+      - "6380:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - nobodies
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.local
+    container_name: nobodies-web-local
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/nobodies
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ..:/app
+      - static_volume:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nobodies
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.profiles.rule=Host(`profiles.i.burn.camp`)"
+      - "traefik.http.routers.profiles.entrypoints=websecure"
+      - "traefik.http.routers.profiles.middlewares=internal-only@file"
+      - "traefik.http.routers.profiles.tls=true"
+      - "traefik.http.routers.profiles.tls.certresolver=letsencrypt"
+      - "traefik.http.services.profiles.loadbalancer.server.port=8000"
+
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.local
+    container_name: nobodies-celery-local
+    restart: unless-stopped
+    command: celery -A config worker -l INFO
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/nobodies
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ..:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nobodies
+
+  celery-beat:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.local
+    container_name: nobodies-beat-local
+    restart: unless-stopped
+    command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/nobodies
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ..:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nobodies
 
 volumes:
   postgres_data_local:
+  static_volume:
+
+networks:
+  nobodies:
+    driver: bridge
+  proxy:
+    external: true
