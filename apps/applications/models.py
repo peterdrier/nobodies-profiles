@@ -1,13 +1,13 @@
 """
 Application models for membership applications.
 
-Uses django-fsm for state machine workflow.
+Uses viewflow.fsm for state machine workflow.
 """
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django_fsm import FSMField, transition
+from viewflow.fsm import State
 from simple_history.models import HistoricalRecords
 
 from apps.members.models import Profile, Role, RoleAssignment
@@ -145,10 +145,10 @@ class Application(models.Model):
         help_text=_('Skills or experience you can contribute'),
     )
 
-    # Workflow
-    status = FSMField(
+    # Workflow - viewflow.fsm state machine
+    status = State(
+        ApplicationStatus,
         default=ApplicationStatus.SUBMITTED,
-        verbose_name=_('status'),
     )
 
     batch = models.ForeignKey(
@@ -201,8 +201,7 @@ class Application(models.Model):
 
     # FSM Transitions
 
-    @transition(
-        field=status,
+    @status.transition(
         source=ApplicationStatus.SUBMITTED,
         target=ApplicationStatus.UNDER_REVIEW,
     )
@@ -211,8 +210,7 @@ class Application(models.Model):
         if reviewer:
             self.reviewed_by = reviewer
 
-    @transition(
-        field=status,
+    @status.transition(
         source=ApplicationStatus.UNDER_REVIEW,
         target=ApplicationStatus.APPROVED,
     )
@@ -259,8 +257,7 @@ class Application(models.Model):
             notes=f"Approved via application #{self.pk}",
         )
 
-    @transition(
-        field=status,
+    @status.transition(
         source=ApplicationStatus.UNDER_REVIEW,
         target=ApplicationStatus.REJECTED,
     )

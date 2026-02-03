@@ -10,11 +10,10 @@ django-allauth[socialaccount]>=0.61
 # Async tasks
 celery[redis]>=5.3
 django-celery-beat>=2.5
+redis>=7.0
 
 # State machines
-# Note: django-fsm is deprecated but viewflow.fsm requires significant refactoring.
-# TODO: Migrate to viewflow.fsm in a future phase.
-django-fsm>=2.8
+django-viewflow>=2.2
 
 # Audit trail
 django-simple-history>=3.4

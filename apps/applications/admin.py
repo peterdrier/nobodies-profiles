@@ -9,6 +9,20 @@ from simple_history.admin import SimpleHistoryAdmin
 from .models import Application, ApplicationBatch, ApplicationStatus
 
 
+class ApplicationStatusFilter(admin.SimpleListFilter):
+    """Custom filter for viewflow.fsm State field."""
+    title = _('status')
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        return ApplicationStatus.choices
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(status=self.value())
+        return queryset
+
+
 class ApplicationResource(resources.ModelResource):
     """Import/Export resource for Application model."""
 
@@ -57,7 +71,7 @@ class ApplicationAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
         'legal_name', 'user_email', 'role_requested', 'status_badge',
         'batch', 'submitted_at', 'reviewed_by'
     )
-    list_filter = ('status', 'role_requested', 'batch', 'submitted_at', 'country_of_residence')
+    list_filter = (ApplicationStatusFilter, 'role_requested', 'batch', 'submitted_at', 'country_of_residence')
     search_fields = ('legal_name', 'user__email', 'motivation', 'skills')
     readonly_fields = (
         'submitted_at', 'reviewed_at', 'data_processing_consent_at',
