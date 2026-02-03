@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Request Data Export" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Request Data Export" %}</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <p>{% trans "You are requesting a complete export of your personal data in accordance with GDPR Article 15 (Right of Access)." %}</p>
+
+            <h2 class="h5">{% trans "What's included:" %}</h2>
+            <ul>
+                <li>{% trans "Your profile information" %}</li>
+                <li>{% trans "Your account details" %}</li>
+                <li>{% trans "Role assignment history" %}</li>
+                <li>{% trans "Consent records" %}</li>
+                <li>{% trans "Team membership history" %}</li>
+                <li>{% trans "Application history" %}</li>
+                <li>{% trans "Access logs" %}</li>
+                <li>{% trans "Change history" %}</li>
+            </ul>
+
+            <div class="alert alert-info">
+                {% blocktrans with days=expiry_days %}
+                The export will be available for download for {{ days }} days.
+                {% endblocktrans %}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="confirm" name="confirm" required>
+                    <label class="form-check-label" for="confirm">
+                        {{ form.confirm.help_text }}
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{% trans "Request Export" %}</button>
+                    <a href="{% url 'gdpr:my_data' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

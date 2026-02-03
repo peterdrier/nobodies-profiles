@@ -5,7 +5,9 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .models import Profile, RoleAssignment, Team, TeamMembership
+from django.utils.html import format_html
+
+from .models import CommunityTag, Profile, ProfileTag, RoleAssignment, Team, TeamMembership
 
 
 class ProfileResource(resources.ModelResource):
@@ -15,6 +17,15 @@ class ProfileResource(resources.ModelResource):
         model = Profile
         fields = ('id', 'user__email', 'legal_name', 'country_of_residence', 'created_at')
         export_order = fields
+
+
+class ProfileTagInline(admin.TabularInline):
+    """Inline admin for profile tags."""
+    model = ProfileTag
+    extra = 0
+    readonly_fields = ('assigned_at',)
+    fields = ('tag', 'assigned_by', 'notes', 'assigned_at')
+    raw_id_fields = ('assigned_by',)
 
 
 class RoleAssignmentInline(admin.TabularInline):
@@ -33,7 +44,7 @@ class ProfileAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     list_filter = ('country_of_residence', 'created_at')
     search_fields = ('legal_name', 'user__email')
     readonly_fields = ('created_at', 'updated_at', 'membership_status')
-    inlines = [RoleAssignmentInline]
+    inlines = [RoleAssignmentInline, ProfileTagInline]
 
     fieldsets = (
         (None, {
@@ -131,3 +142,72 @@ class TeamMembershipAdmin(SimpleHistoryAdmin):
     search_fields = ('profile__legal_name', 'profile__user__email', 'team__name')
     raw_id_fields = ('profile', 'added_by')
     readonly_fields = ('joined_at', 'left_at')
+
+
+@admin.register(CommunityTag)
+class CommunityTagAdmin(SimpleHistoryAdmin):
+    """Admin interface for CommunityTag model."""
+    list_display = ('name', 'slug', 'category', 'color_preview', 'is_self_assignable', 'is_active', 'display_order', 'profile_count')
+    list_filter = ('category', 'is_self_assignable', 'is_active')
+    search_fields = ('name', 'slug', 'description')
+    prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ('created_at', 'updated_at')
+    list_editable = ('display_order', 'is_active')
+    ordering = ('display_order', 'name')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'description', 'category')
+        }),
+        (_('Display'), {
+            'fields': ('color', 'icon', 'display_order'),
+        }),
+        (_('Permissions'), {
+            'fields': ('is_self_assignable', 'is_active'),
+        }),
+        (_('Timestamps'), {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    @admin.display(description=_('Color'))
+    def color_preview(self, obj):
+        return format_html(
+            '<span style="background-color: {}; padding: 2px 10px; border-radius: 3px; color: white;">{}</span>',
+            obj.color,
+            obj.color
+        )
+
+    @admin.display(description=_('Profiles'))
+    def profile_count(self, obj):
+        return obj.profile_tags.count()
+
+
+@admin.register(ProfileTag)
+class ProfileTagAdmin(SimpleHistoryAdmin):
+    """Admin interface for ProfileTag model."""
+    list_display = ('profile', 'tag', 'tag_color', 'assigned_by', 'assigned_at')
+    list_filter = ('tag', 'tag__category', 'assigned_at')
+    search_fields = ('profile__legal_name', 'profile__user__email', 'tag__name')
+    raw_id_fields = ('profile', 'assigned_by')
+    readonly_fields = ('assigned_at',)
+    autocomplete_fields = ('tag',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('profile', 'tag', 'assigned_by', 'notes')
+        }),
+        (_('Timestamps'), {
+            'fields': ('assigned_at',),
+            'classes': ('collapse',),
+        }),
+    )
+
+    @admin.display(description=_('Tag Color'))
+    def tag_color(self, obj):
+        return format_html(
+            '<span style="background-color: {}; padding: 2px 10px; border-radius: 3px; color: white;">{}</span>',
+            obj.tag.color,
+            obj.tag.name
+        )

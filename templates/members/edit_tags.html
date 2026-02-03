@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit My Tags" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Edit My Tags" %}</h1>
+
+    <p class="lead">{% trans "Select the tags that describe you. These are visible on your profile." %}</p>
+
+    {% if admin_tags %}
+    <div class="admin-tags-section mb-4">
+        <h3>{% trans "Assigned Tags" %}</h3>
+        <p class="text-muted">{% trans "These tags were assigned by administrators and cannot be changed." %}</p>
+        <div class="tag-list">
+            {% for pt in admin_tags %}
+            <span class="tag-badge" style="background-color: {{ pt.tag.color }}; color: white; padding: 4px 12px; border-radius: 16px; margin-right: 8px; margin-bottom: 8px; display: inline-block;">
+                {% if pt.tag.icon %}<i class="{{ pt.tag.icon }}"></i> {% endif %}{{ pt.tag.name }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="self-assignable-tags-section">
+        <h3>{% trans "Self-Assignable Tags" %}</h3>
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.tags.field.queryset %}
+            <div class="tag-checkboxes">
+                {% for tag in form.tags.field.queryset %}
+                <div class="form-check mb-2">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           name="tags"
+                           value="{{ tag.pk }}"
+                           id="tag_{{ tag.pk }}"
+                           {% if tag.pk in form.initial.tags %}checked{% endif %}>
+                    <label class="form-check-label" for="tag_{{ tag.pk }}">
+                        <span class="tag-preview" style="background-color: {{ tag.color }}; color: white; padding: 2px 8px; border-radius: 12px;">
+                            {% if tag.icon %}<i class="{{ tag.icon }}"></i> {% endif %}{{ tag.name }}
+                        </span>
+                        {% if tag.description %}
+                        <small class="text-muted d-block mt-1">{{ tag.description }}</small>
+                        {% endif %}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">{% trans "No self-assignable tags are available at this time." %}</p>
+            {% endif %}
+
+            <div class="form-actions mt-4">
+                <button type="submit" class="btn btn-primary">{% trans "Save Tags" %}</button>
+                <a href="{% url 'members:profile' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

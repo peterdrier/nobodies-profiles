@@ -165,11 +165,7 @@
     <div class="card mt-4">
         <h2>{% trans "My Data" %}</h2>
         <p>{% trans "Manage your personal data in accordance with GDPR." %}</p>
-        <div class="gdpr-actions">
-            <button class="btn btn-secondary" disabled>{% trans "Download My Data" %}</button>
-            <button class="btn btn-danger-outline" disabled>{% trans "Request Account Deletion" %}</button>
-        </div>
-        <small class="text-muted">{% trans "These features will be available in a future update." %}</small>
+        <a href="{% url 'gdpr:my_data' %}" class="btn btn-secondary">{% trans "Manage My Data" %}</a>
     </div>
 </div>
 {% endblock %}

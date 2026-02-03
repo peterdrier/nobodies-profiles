@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Deletion Requests" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Deletion Requests" %}</h1>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">{% trans "Status" %}</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">{% trans "All Statuses" %}</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">{% trans "Filter" %}</button>
+                    <a href="{% url 'gdpr:deletion_request_list' %}" class="btn btn-secondary ms-2">{% trans "Clear" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Request List -->
+    <div class="card">
+        <div class="card-body">
+            {% if deletion_requests %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Profile" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Requested" %}</th>
+                            <th>{% trans "Confirmed" %}</th>
+                            <th>{% trans "Reviewed By" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in deletion_requests %}
+                        <tr>
+                            <td>
+                                {% if req.profile %}
+                                {{ req.profile.legal_name }}
+                                {% else %}
+                                <em>[{% trans "Deleted" %}]</em>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge
+                                    {% if req.status == 'UNDER_REVIEW' %}bg-primary
+                                    {% elif req.status == 'APPROVED' %}bg-success
+                                    {% elif req.status == 'DENIED' %}bg-danger
+                                    {% elif req.status == 'EXECUTED' %}bg-secondary
+                                    {% elif req.status == 'PENDING_CONFIRMATION' %}bg-warning
+                                    {% else %}bg-info{% endif %}">
+                                    {{ req.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ req.created_at|date:"M j, Y H:i" }}</td>
+                            <td>
+                                {% if req.confirmed_at %}
+                                {{ req.confirmed_at|date:"M j, Y H:i" }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if req.reviewed_by %}
+                                {{ req.reviewed_by.email }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'gdpr:deletion_request_detail' req.pk %}" class="btn btn-sm btn-outline-primary">
+                                    {% trans "View" %}
+                                </a>
+                                {% if req.status == 'UNDER_REVIEW' %}
+                                <a href="{% url 'gdpr:review_deletion' req.pk %}" class="btn btn-sm btn-primary">
+                                    {% trans "Review" %}
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">
+                            {% trans "Previous" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            {% blocktrans with num=page_obj.number total=page_obj.paginator.num_pages %}
+                            Page {{ num }} of {{ total }}
+                            {% endblocktrans %}
+                        </span>
+                    </li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">
+                            {% trans "Next" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <p class="text-muted text-center">{% trans "No deletion requests found." %}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="actions mt-4">
+        <a href="{% url 'gdpr:board_dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+    </div>
+</div>
+{% endblock %}

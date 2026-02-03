@@ -30,6 +30,7 @@ urlpatterns += i18n_patterns(
     path('applications/', include('apps.applications.urls')),
     path('members/', include('apps.members.urls')),
     path('documents/', include('apps.documents.urls')),
+    path('gdpr/', include('apps.gdpr.urls')),
 
     # Home page
     path('', TemplateView.as_view(template_name='home.html'), name='home'),

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Deletion Request Details" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Deletion Request Details" %}</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Request Information" %}</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">{% trans "Profile" %}</dt>
+                        <dd class="col-sm-8">
+                            {% if deletion_request.profile %}
+                            {{ deletion_request.profile.legal_name }}
+                            {% else %}
+                            <em>[{% trans "Deleted" %}]</em>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{% trans "Status" %}</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge
+                                {% if deletion_request.status == 'UNDER_REVIEW' %}bg-primary
+                                {% elif deletion_request.status == 'APPROVED' %}bg-success
+                                {% elif deletion_request.status == 'DENIED' %}bg-danger
+                                {% elif deletion_request.status == 'EXECUTED' %}bg-secondary
+                                {% else %}bg-info{% endif %}">
+                                {{ deletion_request.get_status_display }}
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">{% trans "Requested" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.created_at|date:"F j, Y H:i" }}</dd>
+
+                        {% if deletion_request.confirmed_at %}
+                        <dt class="col-sm-4">{% trans "Confirmed" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.confirmed_at|date:"F j, Y H:i" }}</dd>
+                        {% endif %}
+
+                        {% if deletion_request.request_reason %}
+                        <dt class="col-sm-4">{% trans "Reason" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.request_reason }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {% if deletion_request.reviewed_by %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Review Information" %}</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">{% trans "Reviewed By" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.reviewed_by.email }}</dd>
+
+                        <dt class="col-sm-4">{% trans "Reviewed At" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.reviewed_at|date:"F j, Y H:i" }}</dd>
+
+                        {% if deletion_request.review_notes %}
+                        <dt class="col-sm-4">{% trans "Notes" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.review_notes }}</dd>
+                        {% endif %}
+
+                        {% if deletion_request.denial_reason %}
+                        <dt class="col-sm-4">{% trans "Denial Reason" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.denial_reason }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if deletion_request.executed_at %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Execution Details" %}</h2>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">{% trans "Executed At" %}</dt>
+                        <dd class="col-sm-8">{{ deletion_request.executed_at|date:"F j, Y H:i" }}</dd>
+                    </dl>
+
+                    {% if deletion_request.anonymization_log %}
+                    <h3 class="h6">{% trans "Anonymization Log" %}</h3>
+                    <pre class="bg-light p-3 rounded">{{ deletion_request.anonymization_log|pprint }}</pre>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if deletion_request.profile_snapshot %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Profile Snapshot (Before Deletion)" %}</h2>
+                </div>
+                <div class="card-body">
+                    <pre class="bg-light p-3 rounded">{{ deletion_request.profile_snapshot|pprint }}</pre>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {% if deletion_request.status == 'UNDER_REVIEW' %}
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Actions" %}</h2>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'gdpr:review_deletion' deletion_request.pk %}" class="btn btn-primary w-100">
+                        {% trans "Review This Request" %}
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="actions mt-4">
+        <a href="{% url 'gdpr:deletion_request_list' %}" class="btn btn-secondary">{% trans "Back to List" %}</a>
+    </div>
+</div>
+{% endblock %}

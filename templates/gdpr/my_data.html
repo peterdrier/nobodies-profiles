@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Data" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "My Data" %}</h1>
+    <p class="lead">{% trans "Manage your personal data in accordance with GDPR." %}</p>
+
+    {% if profile %}
+    <div class="row">
+        <!-- Data Export Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Data Export" %}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{% trans "Download a copy of all your personal data stored in our system." %}</p>
+
+                    {% if can_request_export %}
+                    <a href="{% url 'gdpr:request_export' %}" class="btn btn-primary">
+                        {% trans "Request Data Export" %}
+                    </a>
+                    {% else %}
+                    <p class="text-muted">
+                        {% blocktrans with hours=export_rate_limit_hours %}
+                        You can request a new export every {{ hours }} hours.
+                        {% endblocktrans %}
+                    </p>
+                    {% endif %}
+
+                    {% if export_requests %}
+                    <hr>
+                    <h3 class="h6">{% trans "Recent Exports" %}</h3>
+                    <ul class="list-unstyled">
+                        {% for req in export_requests %}
+                        <li class="mb-2">
+                            <span class="badge
+                                {% if req.status == 'COMPLETED' %}bg-success
+                                {% elif req.status == 'PROCESSING' %}bg-info
+                                {% elif req.status == 'FAILED' %}bg-danger
+                                {% elif req.status == 'EXPIRED' %}bg-secondary
+                                {% else %}bg-warning{% endif %}">
+                                {{ req.get_status_display }}
+                            </span>
+                            {{ req.created_at|date:"M j, Y H:i" }}
+                            {% if req.is_downloadable %}
+                            <a href="{% url 'gdpr:download_export' req.download_token %}" class="btn btn-sm btn-outline-primary">
+                                {% trans "Download" %}
+                            </a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Deletion Section -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="h5 mb-0">{% trans "Account Deletion" %}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{% trans "Request permanent deletion of your account and all associated data." %}</p>
+
+                    {% if deletion_request %}
+                    <div class="alert alert-warning">
+                        <strong>{% trans "Pending Request" %}</strong><br>
+                        {% trans "Status:" %} {{ deletion_request.get_status_display }}<br>
+                        {% trans "Requested:" %} {{ deletion_request.created_at|date:"M j, Y H:i" }}
+                        {% if deletion_request.status == 'PENDING_CONFIRMATION' %}
+                        <br><small>{% trans "Please check your email to confirm the request." %}</small>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <a href="{% url 'gdpr:request_deletion' %}" class="btn btn-outline-danger">
+                        {% trans "Request Account Deletion" %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Summary -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h2 class="h5 mb-0">{% trans "Your Data Summary" %}</h2>
+        </div>
+        <div class="card-body">
+            <p>{% trans "Here is a summary of the personal data we store about you:" %}</p>
+            <ul>
+                <li><strong>{% trans "Profile Information:" %}</strong> {% trans "Name, country, membership status" %}</li>
+                <li><strong>{% trans "Account Information:" %}</strong> {% trans "Email, display name, language preference" %}</li>
+                <li><strong>{% trans "Membership History:" %}</strong> {% trans "Role assignments, team memberships" %}</li>
+                <li><strong>{% trans "Consent Records:" %}</strong> {% trans "Documents you have agreed to" %}</li>
+                <li><strong>{% trans "Activity Logs:" %}</strong> {% trans "Login history, system access" %}</li>
+            </ul>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="alert alert-info">
+        {% trans "You don't have a profile yet. GDPR data management will be available once you have an active membership." %}
+    </div>
+    {% endif %}
+
+    <div class="actions mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+    </div>
+</div>
+{% endblock %}

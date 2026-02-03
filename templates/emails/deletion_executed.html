@@ -1,0 +1,27 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block subject %}{% trans "Your account has been deleted" %}{% endblock %}
+
+{% block content %}
+<h1>{% trans "Account Deletion Complete" %}</h1>
+
+<p>{% trans "Hello," %}</p>
+
+<p>{% trans "As requested, your account and personal data have been deleted from Nobodies Profiles." %}</p>
+
+<h2>{% trans "What was deleted:" %}</h2>
+<ul>
+    <li>{% trans "Your profile information has been anonymized" %}</li>
+    <li>{% trans "Your email address has been replaced with a placeholder" %}</li>
+    <li>{% trans "Your Google Drive access has been revoked" %}</li>
+    <li>{% trans "Your team memberships have been deactivated" %}</li>
+    <li>{% trans "Your role assignments have been deactivated" %}</li>
+</ul>
+
+<p>{% trans "Some information is retained for legal compliance purposes but is no longer linked to your identity." %}</p>
+
+<p>{% trans "This is the final notification you will receive from us at this email address." %}</p>
+
+<p>{% trans "Thank you for being part of our community." %}</p>
+{% endblock %}

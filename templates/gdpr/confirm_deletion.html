@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirm Account Deletion" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Confirm Account Deletion" %}</h1>
+
+    <div class="alert alert-warning">
+        <strong>{% trans "Final Confirmation Required" %}</strong>
+        <p class="mb-0">
+            {% trans "You requested to delete your account. Please confirm below to proceed." %}
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <p>
+                {% trans "Request submitted:" %} {{ deletion_request.created_at|date:"F j, Y H:i" }}
+            </p>
+
+            {% if deletion_request.request_reason %}
+            <p>
+                <strong>{% trans "Your reason:" %}</strong><br>
+                {{ deletion_request.request_reason }}
+            </p>
+            {% endif %}
+
+            <hr>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="confirm" name="confirm" required>
+                    <label class="form-check-label" for="confirm">
+                        <strong>{{ form.confirm.label }}</strong><br>
+                        <small class="text-muted">{{ form.confirm.help_text }}</small>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">{% trans "Confirm Deletion Request" %}</button>
+                    <a href="{% url 'gdpr:my_data' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% load i18n %}
+{% trans "Account Deletion Complete" %}
+============================
+
+{% trans "Hello," %}
+
+{% trans "As requested, your account and personal data have been deleted from Nobodies Profiles." %}
+
+{% trans "What was deleted:" %}
+- {% trans "Your profile information has been anonymized" %}
+- {% trans "Your email address has been replaced with a placeholder" %}
+- {% trans "Your Google Drive access has been revoked" %}
+- {% trans "Your team memberships have been deactivated" %}
+- {% trans "Your role assignments have been deactivated" %}
+
+{% trans "Some information is retained for legal compliance purposes but is no longer linked to your identity." %}
+
+{% trans "This is the final notification you will receive from us at this email address." %}
+
+{% trans "Thank you for being part of our community." %}
+
+--
+Nobodies Profiles

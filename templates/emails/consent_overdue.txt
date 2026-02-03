@@ -1,0 +1,32 @@
+{% load i18n %}
+{% trans "Document Consent Overdue" %}
+===========================
+
+{% blocktrans with name=profile.legal_name %}Hello {{ name }},{% endblocktrans %}
+
+{% trans "Your consent to one or more required documents is overdue. Your membership status has been changed to RESTRICTED until you provide the necessary consent." %}
+
+{% if overdue_documents %}
+{% trans "Documents Requiring Your Consent:" %}
+{% for doc in overdue_documents %}
+- {{ doc.document.title }} ({% trans "Version" %} {{ doc.version_number }}){% if doc.re_consent_deadline %}
+  {% trans "Deadline was:" %} {{ doc.re_consent_deadline|date:"F j, Y" }}{% endif %}
+{% endfor %}
+{% endif %}
+
+{% trans "Review and sign documents:" %}
+{{ documents_url }}
+
+{% trans "What This Means" %}
+-----------------
+{% trans "While your membership is RESTRICTED:" %}
+- {% trans "Your Google Drive access may be suspended" %}
+- {% trans "You may not be able to participate in certain activities" %}
+- {% trans "Your full membership benefits are on hold" %}
+
+{% trans "Please sign the required documents as soon as possible to restore your full membership status." %}
+
+{% trans "If you have any questions, please contact the Board." %}
+
+--
+Nobodies Profiles

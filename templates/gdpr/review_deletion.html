@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Review Deletion Request" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Review Deletion Request" %}</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Request Summary" %}</h2>
+                </div>
+                <div class="card-body">
+                    <dl>
+                        <dt>{% trans "Profile" %}</dt>
+                        <dd>{{ deletion_request.profile.legal_name }}</dd>
+
+                        <dt>{% trans "Email" %}</dt>
+                        <dd>{{ deletion_request.profile.user.email }}</dd>
+
+                        <dt>{% trans "Member Since" %}</dt>
+                        <dd>{{ deletion_request.profile.created_at|date:"F j, Y" }}</dd>
+
+                        <dt>{% trans "Requested" %}</dt>
+                        <dd>{{ deletion_request.created_at|date:"F j, Y H:i" }}</dd>
+
+                        <dt>{% trans "Confirmed" %}</dt>
+                        <dd>{{ deletion_request.confirmed_at|date:"F j, Y H:i" }}</dd>
+
+                        {% if deletion_request.request_reason %}
+                        <dt>{% trans "User's Reason" %}</dt>
+                        <dd>{{ deletion_request.request_reason }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Your Decision" %}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.decision.label }}</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="decision" id="decision_approve" value="approve" required>
+                                <label class="btn btn-outline-success" for="decision_approve">{% trans "Approve" %}</label>
+
+                                <input type="radio" class="btn-check" name="decision" id="decision_deny" value="deny">
+                                <label class="btn btn-outline-danger" for="decision_deny">{% trans "Deny" %}</label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">{{ form.notes.label }}</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                            <small class="text-muted">{{ form.notes.help_text }}</small>
+                        </div>
+
+                        <div class="mb-3" id="denial_reason_field" style="display: none;">
+                            <label for="denial_reason" class="form-label">{{ form.denial_reason.label }}</label>
+                            <textarea class="form-control" id="denial_reason" name="denial_reason" rows="3"></textarea>
+                            <small class="text-muted">{{ form.denial_reason.help_text }}</small>
+                        </div>
+
+                        <div class="alert alert-warning" id="approve_warning" style="display: none;">
+                            <strong>{% trans "Warning:" %}</strong>
+                            {% trans "Approving this request will permanently anonymize the user's data. This cannot be undone." %}
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">{% trans "Submit Decision" %}</button>
+                            <a href="{% url 'gdpr:deletion_request_detail' deletion_request.pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const decisionApprove = document.getElementById('decision_approve');
+    const decisionDeny = document.getElementById('decision_deny');
+    const denialReasonField = document.getElementById('denial_reason_field');
+    const approveWarning = document.getElementById('approve_warning');
+
+    function updateVisibility() {
+        if (decisionDeny.checked) {
+            denialReasonField.style.display = 'block';
+            approveWarning.style.display = 'none';
+        } else if (decisionApprove.checked) {
+            denialReasonField.style.display = 'none';
+            approveWarning.style.display = 'block';
+        } else {
+            denialReasonField.style.display = 'none';
+            approveWarning.style.display = 'none';
+        }
+    }
+
+    decisionApprove.addEventListener('change', updateVisibility);
+    decisionDeny.addEventListener('change', updateVisibility);
+});
+</script>
+{% endblock %}

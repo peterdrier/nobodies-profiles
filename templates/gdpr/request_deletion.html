@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Request Account Deletion" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Request Account Deletion" %}</h1>
+
+    <div class="alert alert-danger">
+        <strong>{% trans "Warning: This action is irreversible" %}</strong>
+        <p class="mb-0">
+            {% trans "Requesting account deletion will permanently remove your personal data from our system. This cannot be undone." %}
+        </p>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="h5">{% trans "What will happen:" %}</h2>
+            <ul>
+                <li>{% trans "Your profile information will be anonymized" %}</li>
+                <li>{% trans "Your email address will be replaced with a placeholder" %}</li>
+                <li>{% trans "Your Google Drive access will be revoked" %}</li>
+                <li>{% trans "Your team memberships will be deactivated" %}</li>
+                <li>{% trans "Your role assignments will be deactivated" %}</li>
+                <li>{% trans "Your consent records will be preserved (legally required) but marked inactive" %}</li>
+            </ul>
+
+            <h2 class="h5 mt-4">{% trans "Process:" %}</h2>
+            <ol>
+                <li>{% trans "Submit this request" %}</li>
+                <li>{% trans "Confirm via email link" %}</li>
+                <li>{% trans "Board reviews the request" %}</li>
+                <li>{% trans "If approved, your data will be anonymized" %}</li>
+            </ol>
+
+            <hr>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="reason" class="form-label">{{ form.reason.label }}</label>
+                    <textarea class="form-control" id="reason" name="reason" rows="4"
+                              placeholder="{% trans 'Optional - let us know why you want to leave' %}"></textarea>
+                    <small class="text-muted">{{ form.reason.help_text }}</small>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="confirm" name="confirm" required>
+                    <label class="form-check-label" for="confirm">
+                        <strong>{{ form.confirm.label }}</strong><br>
+                        <small class="text-muted">{{ form.confirm.help_text }}</small>
+                    </label>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="final_confirm" name="final_confirm" required>
+                    <label class="form-check-label" for="final_confirm">
+                        <strong>{{ form.final_confirm.label }}</strong><br>
+                        <small class="text-muted">{{ form.final_confirm.help_text }}</small>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">{% trans "Request Deletion" %}</button>
+                    <a href="{% url 'gdpr:my_data' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

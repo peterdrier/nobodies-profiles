@@ -32,7 +32,29 @@
             <dd>{{ profile.membership_status }}</dd>
         </dl>
 
-        <p class="edit-note">
+        {% if profile_tags %}
+        <div class="profile-tags mt-4">
+            <h3>{% trans "Tags" %}</h3>
+            <div class="tag-list">
+                {% for pt in profile_tags %}
+                <span class="tag-badge" style="background-color: {{ pt.tag.color }}; color: white; padding: 4px 12px; border-radius: 16px; margin-right: 8px; margin-bottom: 8px; display: inline-block;">
+                    {% if pt.tag.icon %}<i class="{{ pt.tag.icon }}"></i> {% endif %}{{ pt.tag.name }}
+                </span>
+                {% endfor %}
+            </div>
+            {% if has_self_assignable_tags %}
+            <a href="{% url 'members:edit_tags' %}" class="btn btn-sm btn-outline-secondary mt-2">{% trans "Edit My Tags" %}</a>
+            {% endif %}
+        </div>
+        {% elif has_self_assignable_tags %}
+        <div class="profile-tags mt-4">
+            <h3>{% trans "Tags" %}</h3>
+            <p class="text-muted">{% trans "You haven't added any tags yet." %}</p>
+            <a href="{% url 'members:edit_tags' %}" class="btn btn-sm btn-outline-secondary">{% trans "Add Tags" %}</a>
+        </div>
+        {% endif %}
+
+        <p class="edit-note mt-4">
             {% trans "To update your profile information, please contact the Board." %}
         </p>
     </div>

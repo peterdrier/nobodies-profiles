@@ -1,0 +1,18 @@
+{% load i18n %}
+{% trans "Your Data Export is Ready" %}
+================================
+
+{% blocktrans with name=profile.legal_name %}Hello {{ name }},{% endblocktrans %}
+
+{% trans "Your personal data export has been generated and is ready for download." %}
+
+{% trans "Download your data:" %}
+{{ download_url }}
+
+{% trans "Important:" %}
+{% blocktrans with days=expiry_days date=expires_at|date:"F j, Y" %}This download link will expire in {{ days }} days ({{ date }}). Please download your data before then.{% endblocktrans %}
+
+{% trans "If you did not request this export, please contact us immediately." %}
+
+--
+Nobodies Profiles

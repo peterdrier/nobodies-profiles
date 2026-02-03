@@ -1,0 +1,44 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block subject %}{% trans "Action Required: Document Consent Overdue" %}{% endblock %}
+
+{% block content %}
+<h1>{% trans "Document Consent Overdue" %}</h1>
+
+<p>{% blocktrans with name=profile.legal_name %}Hello {{ name }},{% endblocktrans %}</p>
+
+<p>{% trans "Your consent to one or more required documents is overdue. Your membership status has been changed to RESTRICTED until you provide the necessary consent." %}</p>
+
+{% if overdue_documents %}
+<h2>{% trans "Documents Requiring Your Consent:" %}</h2>
+<ul>
+    {% for doc in overdue_documents %}
+    <li>
+        <strong>{{ doc.document.title }}</strong> ({% trans "Version" %} {{ doc.version_number }})
+        {% if doc.re_consent_deadline %}
+        <br><small class="text-danger">{% trans "Deadline was:" %} {{ doc.re_consent_deadline|date:"F j, Y" }}</small>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<p>
+    <a href="{{ documents_url }}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+        {% trans "Review and Sign Documents" %}
+    </a>
+</p>
+
+<h2>{% trans "What This Means" %}</h2>
+<p>{% trans "While your membership is RESTRICTED:" %}</p>
+<ul>
+    <li>{% trans "Your Google Drive access may be suspended" %}</li>
+    <li>{% trans "You may not be able to participate in certain activities" %}</li>
+    <li>{% trans "Your full membership benefits are on hold" %}</li>
+</ul>
+
+<p>{% trans "Please sign the required documents as soon as possible to restore your full membership status." %}</p>
+
+<p>{% trans "If you have any questions, please contact the Board." %}</p>
+{% endblock %}

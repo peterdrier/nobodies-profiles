@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "GDPR Dashboard" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "GDPR Dashboard" %}</h1>
+    <p class="lead">{% trans "Board overview of GDPR requests and compliance." %}</p>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="display-4">{{ stats.pending_deletions }}</h2>
+                    <p class="text-muted mb-0">{% trans "Pending Deletions" %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="display-4">{{ stats.executed_deletions }}</h2>
+                    <p class="text-muted mb-0">{% trans "Executed Deletions" %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="display-4">{{ stats.exports_this_month }}</h2>
+                    <p class="text-muted mb-0">{% trans "Exports This Month" %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="display-4">{{ stats.total_exports }}</h2>
+                    <p class="text-muted mb-0">{% trans "Total Exports" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Pending Deletion Requests -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">{% trans "Pending Deletion Requests" %}</h2>
+                    <a href="{% url 'gdpr:deletion_request_list' %}" class="btn btn-sm btn-outline-primary">
+                        {% trans "View All" %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if pending_deletions %}
+                    <ul class="list-group list-group-flush">
+                        {% for req in pending_deletions %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ req.profile.legal_name }}</strong><br>
+                                <small class="text-muted">{{ req.created_at|date:"M j, Y" }}</small>
+                            </div>
+                            <a href="{% url 'gdpr:deletion_request_detail' req.pk %}" class="btn btn-sm btn-outline-primary">
+                                {% trans "Review" %}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center mb-0">{% trans "No pending deletion requests" %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Exports -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{% trans "Recent Data Exports" %}</h2>
+                </div>
+                <div class="card-body">
+                    {% if recent_exports %}
+                    <ul class="list-group list-group-flush">
+                        {% for req in recent_exports %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ req.profile.legal_name }}</strong><br>
+                                <small class="text-muted">{{ req.created_at|date:"M j, Y H:i" }}</small>
+                            </div>
+                            <span class="badge
+                                {% if req.status == 'COMPLETED' %}bg-success
+                                {% elif req.status == 'PROCESSING' %}bg-info
+                                {% elif req.status == 'FAILED' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ req.get_status_display }}
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center mb-0">{% trans "No recent export requests" %}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="h5 mb-0">{% trans "Quick Links" %}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="{% url 'gdpr:deletion_request_list' %}" class="btn btn-outline-primary btn-block w-100">
+                        {% trans "All Deletion Requests" %}
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'gdpr:audit_log' %}" class="btn btn-outline-secondary btn-block w-100">
+                        {% trans "Audit Log" %}
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'admin:gdpr_datadeletionrequest_changelist' %}" class="btn btn-outline-secondary btn-block w-100">
+                        {% trans "Admin Panel" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -148,6 +148,19 @@ class Profile(models.Model):
         """Check if this profile belongs to a board member."""
         return self.current_role == Role.BOARD_MEMBER
 
+    @property
+    def tags(self):
+        """Get all active community tags for this profile."""
+        return CommunityTag.objects.filter(
+            profile_tags__profile=self,
+            is_active=True,
+        ).order_by('display_order', 'name')
+
+    @property
+    def tag_slugs(self) -> list[str]:
+        """Get list of tag slugs for this profile."""
+        return list(self.tags.values_list('slug', flat=True))
+
 
 class RoleAssignment(models.Model):
     """
@@ -328,3 +341,126 @@ class TeamMembership(models.Model):
 
     def __str__(self):
         return f"{self.profile.legal_name} - {self.team.name}"
+
+
+class TagCategory(models.TextChoices):
+    """Categories for community tags."""
+    EVENT = 'EVENT', _('Event')
+    SKILL = 'SKILL', _('Skill')
+    RECOGNITION = 'RECOGNITION', _('Recognition')
+    INTEREST = 'INTEREST', _('Interest')
+
+
+class CommunityTag(models.Model):
+    """
+    Ornamental tags for member categorization.
+
+    Tags are purely for display and identity - NOT tied to document
+    requirements or Google access. Examples: "Camp Lead", "Freecamper".
+    """
+    name = models.CharField(
+        _('name'),
+        max_length=100,
+    )
+    slug = models.SlugField(
+        _('slug'),
+        max_length=100,
+        unique=True,
+    )
+    description = models.TextField(
+        _('description'),
+        blank=True,
+        help_text=_('Description of what this tag represents'),
+    )
+    category = models.CharField(
+        _('category'),
+        max_length=20,
+        choices=TagCategory.choices,
+        default=TagCategory.RECOGNITION,
+    )
+    color = models.CharField(
+        _('color'),
+        max_length=7,
+        default='#6c757d',
+        help_text=_('Hex color code for display (e.g., #FF5733)'),
+    )
+    icon = models.CharField(
+        _('icon'),
+        max_length=50,
+        blank=True,
+        help_text=_('CSS icon class (e.g., bi-star-fill)'),
+    )
+    is_self_assignable = models.BooleanField(
+        _('self-assignable'),
+        default=False,
+        help_text=_('Can members add/remove this tag themselves?'),
+    )
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+    )
+    display_order = models.PositiveIntegerField(
+        _('display order'),
+        default=0,
+        help_text=_('Lower numbers appear first'),
+    )
+    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
+
+    # Audit trail
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = _('community tag')
+        verbose_name_plural = _('community tags')
+        ordering = ['display_order', 'name']
+
+    def __str__(self):
+        return self.name
+
+
+class ProfileTag(models.Model):
+    """
+    Through table linking profiles to community tags.
+
+    Tracks who assigned the tag and when.
+    """
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='profile_tags',
+        verbose_name=_('profile'),
+    )
+    tag = models.ForeignKey(
+        CommunityTag,
+        on_delete=models.CASCADE,
+        related_name='profile_tags',
+        verbose_name=_('tag'),
+    )
+    assigned_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tags_assigned',
+        verbose_name=_('assigned by'),
+        help_text=_('Null if self-assigned'),
+    )
+    assigned_at = models.DateTimeField(_('assigned at'), auto_now_add=True)
+    notes = models.TextField(
+        _('notes'),
+        blank=True,
+        help_text=_('Optional notes about why this tag was assigned'),
+    )
+
+    # Audit trail
+    history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = _('profile tag')
+        verbose_name_plural = _('profile tags')
+        unique_together = ['profile', 'tag']
+        ordering = ['tag__display_order', 'tag__name']
+
+    def __str__(self):
+        return f"{self.profile.legal_name} - {self.tag.name}"

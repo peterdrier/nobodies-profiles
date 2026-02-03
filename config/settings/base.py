@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'apps.applications',
     'apps.documents',
     'apps.google_access',
+    'apps.gdpr',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -203,6 +204,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.google_access.tasks.retry_failed_operations',
         'schedule': 3600,  # Hourly
     },
+    'cleanup-gdpr-exports': {
+        'task': 'apps.gdpr.tasks.cleanup_gdpr_exports',
+        'schedule': 86400,  # Daily
+    },
+    'cleanup-rejected-applications': {
+        'task': 'apps.gdpr.tasks.cleanup_rejected_applications',
+        'schedule': 86400,  # Daily
+    },
 }
 
 # Cache configuration
@@ -242,3 +251,8 @@ GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
 
 # Google Service Account for Drive API
 GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get('GOOGLE_SERVICE_ACCOUNT_JSON', '')
+
+# GDPR Settings
+GDPR_EXPORT_EXPIRY_DAYS = int(os.environ.get('GDPR_EXPORT_EXPIRY_DAYS', 30))
+GDPR_EXPORT_RATE_LIMIT_HOURS = int(os.environ.get('GDPR_EXPORT_RATE_LIMIT_HOURS', 24))
+GDPR_REJECTED_APP_RETENTION_DAYS = int(os.environ.get('GDPR_REJECTED_APP_RETENTION_DAYS', 180))
