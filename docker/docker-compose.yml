@@ -5,11 +5,11 @@ services:
       dockerfile: docker/Dockerfile
     container_name: nobodies-web
     restart: unless-stopped
+    env_file:
+      - ../.env
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.production
-      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
-      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-localhost}
       - DATABASE_URL=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-nobodies}
       - REDIS_URL=redis://redis:6379/0
       - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
@@ -32,16 +32,16 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nobodies.rule=Host(`${DOMAIN:-profiles.i.burn.camp}`)"
-      - "traefik.http.routers.nobodies.entrypoints=websecure"
-      - "traefik.http.routers.nobodies.tls=true"
-      - "traefik.http.routers.nobodies.tls.certresolver=letsencrypt"
-      - "traefik.http.services.nobodies.loadbalancer.server.port=8000"
+      - "traefik.http.routers.profiles.rule=Host(`${DOMAIN:-profiles.n.burn.camp}`)"
+      - "traefik.http.routers.profiles.entrypoints=websecure"
+      - "traefik.http.routers.profiles.tls=true"
+      - "traefik.http.routers.profiles.tls.certresolver=letsencrypt"
+      - "traefik.http.services.profiles.loadbalancer.server.port=8000"
       # Homepage integration (optional)
       - "homepage.group=Services"
       - "homepage.name=Nobodies Profiles"
       - "homepage.icon=mdi-account-group"
-      - "homepage.href=https://${DOMAIN:-profiles.i.burn.camp}"
+      - "homepage.href=https://${DOMAIN:-profiles.n.burn.camp}"
       - "homepage.description=Membership Management"
 
   db:
