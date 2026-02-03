@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Apply for Membership" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Apply for Membership" %}</h1>
+
+    <p class="intro">
+        {% blocktrans %}
+        Thank you for your interest in joining Nobodies Collective! Please complete the form below.
+        Your application will be reviewed by our Board, and you'll receive a response within 30 days.
+        {% endblocktrans %}
+    </p>
+
+    <form method="post" class="application-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                {% for error in form.non_field_errors %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <fieldset>
+            <legend>{% trans "Personal Information" %}</legend>
+
+            <div class="form-group">
+                <label for="{{ form.legal_name.id_for_label }}">{{ form.legal_name.label }} *</label>
+                {{ form.legal_name }}
+                {% if form.legal_name.help_text %}<small>{{ form.legal_name.help_text }}</small>{% endif %}
+                {% if form.legal_name.errors %}
+                    <span class="field-error">{{ form.legal_name.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.preferred_name.id_for_label }}">{{ form.preferred_name.label }}</label>
+                {{ form.preferred_name }}
+                {% if form.preferred_name.help_text %}<small>{{ form.preferred_name.help_text }}</small>{% endif %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="{{ form.country_of_residence.id_for_label }}">{{ form.country_of_residence.label }} *</label>
+                    <select name="{{ form.country_of_residence.name }}" id="{{ form.country_of_residence.id_for_label }}" class="form-control">
+                        {% for value, label in form.fields.country_of_residence.choices %}
+                            <option value="{{ value }}" {% if form.country_of_residence.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if form.country_of_residence.errors %}
+                        <span class="field-error">{{ form.country_of_residence.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group half">
+                    <label for="{{ form.preferred_language.id_for_label }}">{{ form.preferred_language.label }} *</label>
+                    <select name="{{ form.preferred_language.name }}" id="{{ form.preferred_language.id_for_label }}" class="form-control">
+                        {% for value, label in form.fields.preferred_language.choices %}
+                            <option value="{{ value }}" {% if form.preferred_language.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "Membership Type" %}</legend>
+
+            <div class="form-group role-selection">
+                {% for radio in form.role_requested %}
+                    <label class="radio-label">
+                        {{ radio.tag }}
+                        <span class="radio-text">{{ radio.choice_label }}</span>
+                    </label>
+                {% endfor %}
+                {% if form.role_requested.errors %}
+                    <span class="field-error">{{ form.role_requested.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "About You" %}</legend>
+
+            <div class="form-group">
+                <label for="{{ form.motivation.id_for_label }}">{{ form.motivation.label }} *</label>
+                {{ form.motivation }}
+                {% if form.motivation.help_text %}<small>{{ form.motivation.help_text }}</small>{% endif %}
+                {% if form.motivation.errors %}
+                    <span class="field-error">{{ form.motivation.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.skills.id_for_label }}">{{ form.skills.label }}</label>
+                {{ form.skills }}
+                {% if form.skills.help_text %}<small>{{ form.skills.help_text }}</small>{% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.how_heard.id_for_label }}">{{ form.how_heard.label }}</label>
+                {{ form.how_heard }}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "Event History" %}</legend>
+
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    {{ form.attended_before }}
+                    <span>{{ form.attended_before.label }}</span>
+                </label>
+            </div>
+
+            <div class="form-group" id="attended-years-group">
+                <label for="{{ form.attended_years.id_for_label }}">{{ form.attended_years.label }}</label>
+                {{ form.attended_years }}
+                {% if form.attended_years.help_text %}<small>{{ form.attended_years.help_text }}</small>{% endif %}
+                {% if form.attended_years.errors %}
+                    <span class="field-error">{{ form.attended_years.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset class="consent-section">
+            <legend>{% trans "Consent & Acknowledgments" %}</legend>
+
+            <div class="form-group checkbox-group consent-box">
+                <label class="checkbox-label">
+                    {{ form.gdpr_consent }}
+                    <span>{{ form.gdpr_consent.label }} *</span>
+                </label>
+                <small class="consent-text">{{ form.gdpr_consent.help_text }}</small>
+                {% if form.gdpr_consent.errors %}
+                    <span class="field-error">{{ form.gdpr_consent.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group checkbox-group consent-box">
+                <label class="checkbox-label">
+                    {{ form.statutes_acknowledgment }}
+                    <span>{{ form.statutes_acknowledgment.label }} *</span>
+                </label>
+                <small class="consent-text">{{ form.statutes_acknowledgment.help_text }}</small>
+                {% if form.statutes_acknowledgment.errors %}
+                    <span class="field-error">{{ form.statutes_acknowledgment.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">{% trans "Submit Application" %}</button>
+        </div>
+    </form>
+</div>
+
+<script>
+// Show/hide attended years based on checkbox
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.querySelector('input[name="attended_before"]');
+    const yearsGroup = document.getElementById('attended-years-group');
+
+    function toggleYears() {
+        yearsGroup.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    checkbox.addEventListener('change', toggleYears);
+    toggleYears();
+});
+</script>
+{% endblock %}

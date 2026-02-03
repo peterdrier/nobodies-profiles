@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Dashboard" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container dashboard">
+    <h1>{% blocktrans with name=user.get_short_name %}Welcome, {{ name }}{% endblocktrans %}</h1>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Status Card -->
+    <div class="status-card status-{{ membership_status|lower }}">
+        <h2>{% trans "Membership Status" %}</h2>
+
+        {% if membership_status == 'NONE' %}
+            <div class="status-content">
+                <span class="status-badge badge-secondary">{% trans "Not a Member" %}</span>
+                <p>{% trans "You don't have an active membership yet." %}</p>
+
+                {% if pending_application %}
+                    <p>{% trans "Your application is being processed." %}</p>
+                    <a href="{% url 'applications:status' pending_application.pk %}" class="btn btn-secondary">
+                        {% trans "Check Application Status" %}
+                    </a>
+                {% elif latest_application and latest_application.status == 'REJECTED' %}
+                    <p>{% trans "Your previous application was not approved." %}</p>
+                    <a href="{% url 'applications:apply' %}" class="btn btn-primary">
+                        {% trans "Apply Again" %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'applications:apply' %}" class="btn btn-primary">
+                        {% trans "Apply for Membership" %}
+                    </a>
+                {% endif %}
+            </div>
+
+        {% elif membership_status == 'PENDING' %}
+            <div class="status-content">
+                <span class="status-badge badge-warning">{% trans "Application Pending" %}</span>
+                <p>{% trans "Your application is being reviewed by the Board." %}</p>
+                {% if pending_application %}
+                    <a href="{% url 'applications:status' pending_application.pk %}" class="btn btn-secondary">
+                        {% trans "View Application" %}
+                    </a>
+                {% endif %}
+            </div>
+
+        {% elif membership_status == 'APPROVED_PENDING_DOCUMENTS' %}
+            <div class="status-content">
+                <span class="status-badge badge-info">{% trans "Approved - Documents Required" %}</span>
+                <p>
+                    {% blocktrans %}
+                    Congratulations! Your application has been approved.
+                    Please review and sign the required documents to activate your membership.
+                    {% endblocktrans %}
+                </p>
+                <a href="#documents" class="btn btn-primary">
+                    {% trans "Review Documents" %}
+                </a>
+            </div>
+
+        {% elif membership_status == 'ACTIVE' %}
+            <div class="status-content">
+                <span class="status-badge badge-success">{% trans "Active Member" %}</span>
+                {% if profile and current_role %}
+                    <p>
+                        {% blocktrans with role=current_role %}
+                        You are an active {{ role }}.
+                        {% endblocktrans %}
+                    </p>
+                {% endif %}
+                {% if role_assignment %}
+                    <p class="expiry-info">
+                        {% blocktrans with days=role_assignment.days_until_expiry %}
+                        Your membership expires in {{ days }} days.
+                        {% endblocktrans %}
+                    </p>
+                {% endif %}
+            </div>
+
+        {% elif membership_status == 'RESTRICTED' %}
+            <div class="status-content">
+                <span class="status-badge badge-warning">{% trans "Restricted" %}</span>
+                <p>
+                    {% blocktrans %}
+                    Your membership is restricted because you need to sign updated documents.
+                    Please review and sign the required documents to restore full access.
+                    {% endblocktrans %}
+                </p>
+                <a href="#documents" class="btn btn-primary">
+                    {% trans "Review Documents" %}
+                </a>
+            </div>
+
+        {% elif membership_status == 'EXPIRED' %}
+            <div class="status-content">
+                <span class="status-badge badge-danger">{% trans "Expired" %}</span>
+                <p>{% trans "Your membership has expired. Please contact the Board to discuss renewal." %}</p>
+            </div>
+
+        {% elif membership_status == 'REMOVED' %}
+            <div class="status-content">
+                <span class="status-badge badge-danger">{% trans "Removed" %}</span>
+                <p>{% trans "Your membership has been removed. Please contact the Board if you have questions." %}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if profile %}
+    <!-- Profile Info -->
+    <div class="card mt-4">
+        <h2>{% trans "Profile Information" %}</h2>
+        <dl class="profile-info">
+            <dt>{% trans "Name" %}</dt>
+            <dd>{{ profile.legal_name }}</dd>
+
+            <dt>{% trans "Email" %}</dt>
+            <dd>{{ user.email }}</dd>
+
+            <dt>{% trans "Country" %}</dt>
+            <dd>{{ profile.country_of_residence }}</dd>
+
+            {% if current_role %}
+            <dt>{% trans "Role" %}</dt>
+            <dd>{{ current_role }}</dd>
+            {% endif %}
+
+            <dt>{% trans "Member Since" %}</dt>
+            <dd>{{ profile.created_at|date:"F j, Y" }}</dd>
+        </dl>
+
+        <a href="{% url 'members:profile' %}" class="btn btn-secondary">{% trans "Edit Profile" %}</a>
+    </div>
+    {% endif %}
+
+    <!-- Pending Documents Section (placeholder for Phase 2) -->
+    {% if membership_status == 'APPROVED_PENDING_DOCUMENTS' or membership_status == 'RESTRICTED' %}
+    <div class="card mt-4" id="documents">
+        <h2>{% trans "Required Documents" %}</h2>
+        <p>{% trans "Document signing functionality coming soon." %}</p>
+        <!-- Will be populated in Phase 2 -->
+    </div>
+    {% endif %}
+
+    <!-- GDPR Section -->
+    <div class="card mt-4">
+        <h2>{% trans "My Data" %}</h2>
+        <p>{% trans "Manage your personal data in accordance with GDPR." %}</p>
+        <div class="gdpr-actions">
+            <button class="btn btn-secondary" disabled>{% trans "Download My Data" %}</button>
+            <button class="btn btn-danger-outline" disabled>{% trans "Request Account Deletion" %}</button>
+        </div>
+        <small class="text-muted">{% trans "These features will be available in a future update." %}</small>
+    </div>
+</div>
+{% endblock %}

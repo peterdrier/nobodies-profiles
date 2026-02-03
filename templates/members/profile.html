@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Profile" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "My Profile" %}</h1>
+
+    {% if profile %}
+    <div class="profile-view">
+        <dl class="profile-details">
+            <dt>{% trans "Legal Name" %}</dt>
+            <dd>{{ profile.legal_name }}</dd>
+
+            <dt>{% trans "Email" %}</dt>
+            <dd>{{ user.email }}</dd>
+
+            <dt>{% trans "Display Name" %}</dt>
+            <dd>{{ user.display_name|default:"-" }}</dd>
+
+            <dt>{% trans "Country of Residence" %}</dt>
+            <dd>{{ profile.country_of_residence }}</dd>
+
+            <dt>{% trans "Preferred Language" %}</dt>
+            <dd>{{ user.get_preferred_language_display }}</dd>
+
+            <dt>{% trans "Member Since" %}</dt>
+            <dd>{{ profile.created_at|date:"F j, Y" }}</dd>
+
+            <dt>{% trans "Current Status" %}</dt>
+            <dd>{{ profile.membership_status }}</dd>
+        </dl>
+
+        <p class="edit-note">
+            {% trans "To update your profile information, please contact the Board." %}
+        </p>
+    </div>
+    {% else %}
+    <p>{% trans "You don't have a profile yet. Please submit a membership application." %}</p>
+    <a href="{% url 'applications:apply' %}" class="btn btn-primary">{% trans "Apply for Membership" %}</a>
+    {% endif %}
+
+    <div class="actions mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+    </div>
+</div>
+{% endblock %}

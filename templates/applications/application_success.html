@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Submitted" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="success-message">
+        <h1>{% trans "Application Submitted!" %}</h1>
+
+        <p class="lead">
+            {% blocktrans %}
+            Thank you for applying to join Nobodies Collective. Your application has been received
+            and will be reviewed by our Board.
+            {% endblocktrans %}
+        </p>
+
+        {% if application %}
+        <div class="application-summary">
+            <h2>{% trans "Application Summary" %}</h2>
+            <dl>
+                <dt>{% trans "Name" %}</dt>
+                <dd>{{ application.legal_name }}</dd>
+
+                <dt>{% trans "Membership Type" %}</dt>
+                <dd>{{ application.get_role_requested_display }}</dd>
+
+                <dt>{% trans "Submitted" %}</dt>
+                <dd>{{ application.submitted_at|date:"F j, Y, g:i a" }}</dd>
+
+                <dt>{% trans "Status" %}</dt>
+                <dd>{{ application.get_status_display }}</dd>
+            </dl>
+        </div>
+        {% endif %}
+
+        <div class="next-steps">
+            <h2>{% trans "What Happens Next?" %}</h2>
+            <ol>
+                <li>{% trans "You will receive a confirmation email shortly." %}</li>
+                <li>{% trans "Our Board will review your application within 30 days." %}</li>
+                <li>{% trans "You will be notified by email once a decision is made." %}</li>
+                <li>{% trans "If approved, you'll be asked to sign some documents before your membership is activated." %}</li>
+            </ol>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">{% trans "Go to Dashboard" %}</a>
+            {% if application %}
+            <a href="{% url 'applications:status' application.pk %}" class="btn btn-secondary">{% trans "Check Status" %}</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Application Status" %} - Nobodies Profiles{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{% trans "Application Status" %}</h1>
+
+    <div class="status-card status-{{ application.status|lower }}">
+        <div class="status-badge">
+            {% if application.status == 'SUBMITTED' %}
+                <span class="badge badge-secondary">{% trans "Submitted" %}</span>
+            {% elif application.status == 'UNDER_REVIEW' %}
+                <span class="badge badge-warning">{% trans "Under Review" %}</span>
+            {% elif application.status == 'APPROVED' %}
+                <span class="badge badge-success">{% trans "Approved" %}</span>
+            {% elif application.status == 'REJECTED' %}
+                <span class="badge badge-danger">{% trans "Not Approved" %}</span>
+            {% endif %}
+        </div>
+
+        <div class="application-details">
+            <dl>
+                <dt>{% trans "Name" %}</dt>
+                <dd>{{ application.legal_name }}</dd>
+
+                <dt>{% trans "Membership Type Requested" %}</dt>
+                <dd>{{ application.get_role_requested_display }}</dd>
+
+                <dt>{% trans "Submitted" %}</dt>
+                <dd>{{ application.submitted_at|date:"F j, Y, g:i a" }}</dd>
+
+                {% if application.reviewed_at %}
+                <dt>{% trans "Reviewed" %}</dt>
+                <dd>{{ application.reviewed_at|date:"F j, Y, g:i a" }}</dd>
+                {% endif %}
+            </dl>
+        </div>
+
+        {% if application.status == 'SUBMITTED' %}
+        <div class="status-message">
+            <p>
+                {% blocktrans %}
+                Your application has been received and is waiting for Board review.
+                You will be notified by email once a decision is made.
+                {% endblocktrans %}
+            </p>
+        </div>
+        {% elif application.status == 'UNDER_REVIEW' %}
+        <div class="status-message">
+            <p>
+                {% blocktrans %}
+                Your application is currently being reviewed by our Board.
+                You will be notified by email once a decision is made.
+                {% endblocktrans %}
+            </p>
+        </div>
+        {% elif application.status == 'APPROVED' %}
+        <div class="status-message success">
+            <p>
+                {% blocktrans %}
+                Congratulations! Your application has been approved.
+                Please check your email for next steps, including signing required documents.
+                {% endblocktrans %}
+            </p>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">{% trans "Go to Dashboard" %}</a>
+        </div>
+        {% elif application.status == 'REJECTED' %}
+        <div class="status-message error">
+            <p>
+                {% blocktrans %}
+                We're sorry, but your application was not approved at this time.
+                If you have questions, please contact the Board.
+                {% endblocktrans %}
+            </p>
+            {% if application.review_notes %}
+            <div class="review-notes">
+                <strong>{% trans "Notes:" %}</strong>
+                <p>{{ application.review_notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="actions mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">{% trans "Back to Dashboard" %}</a>
+    </div>
+</div>
+{% endblock %}

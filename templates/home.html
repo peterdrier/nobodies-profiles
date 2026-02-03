@@ -4,15 +4,41 @@
 {% block title %}{% trans "Home" %} - Nobodies Profiles{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>{% trans "Welcome to Nobodies Profiles" %}</h1>
+<div class="container home-page">
+    <div class="hero">
+        <h1>{% trans "Nobodies Collective" %}</h1>
+        <p class="tagline">{% trans "Member Portal" %}</p>
+    </div>
 
     {% if user.is_authenticated %}
-        <p>{% blocktrans with name=user.get_short_name %}Hello, {{ name }}!{% endblocktrans %}</p>
-        <p>{% trans "Your account is set up. More features coming soon." %}</p>
+        <div class="welcome-box">
+            <p>{% blocktrans with name=user.get_short_name %}Hello, {{ name }}!{% endblocktrans %}</p>
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">{% trans "Go to Dashboard" %}</a>
+        </div>
     {% else %}
-        <p>{% trans "Sign in with your Google account to get started." %}</p>
-        <a href="{% url 'account_login' %}" class="btn btn-primary">{% trans "Sign in with Google" %}</a>
+        <div class="welcome-box">
+            <h2>{% trans "Welcome" %}</h2>
+            <p>{% trans "Sign in with your Google account to access the member portal, check your membership status, or apply to join Nobodies Collective." %}</p>
+
+            <a href="{% url 'account_login' %}" class="btn btn-primary btn-large">
+                {% trans "Sign in with Google" %}
+            </a>
+
+            <p class="note mt-2">
+                {% trans "Not a member yet? You can apply after signing in." %}
+            </p>
+        </div>
+
+        <div class="info-section">
+            <h2>{% trans "About Nobodies Collective" %}</h2>
+            <p>
+                {% blocktrans %}
+                Nobodies Collective is a Spanish nonprofit association that organizes Nowhere,
+                a Burning Man-style cultural event in Spain. We're a community of volunteers
+                who come together to create art, share experiences, and build temporary cities.
+                {% endblocktrans %}
+            </p>
+        </div>
     {% endif %}
 </div>
 {% endblock %}
