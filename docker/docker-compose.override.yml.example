@@ -1,0 +1,13 @@
+# Local deployment overrides
+# Copy to docker-compose.override.yml and customize for your environment
+
+services:
+  web:
+    labels:
+      - "traefik.enable=true"
+      # Customize these for your domain
+      - "traefik.http.routers.profiles.rule=Host(`profiles.example.com`)"
+      - "traefik.http.routers.profiles.entrypoints=websecure"
+      - "traefik.http.routers.profiles.tls=true"
+      - "traefik.http.routers.profiles.tls.certresolver=letsencrypt"
+      - "traefik.http.services.profiles.loadbalancer.server.port=8000"

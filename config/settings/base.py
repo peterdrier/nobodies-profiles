@@ -23,7 +23,7 @@ ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').sp
 # CSRF trusted origins (needed when behind reverse proxy)
 CSRF_TRUSTED_ORIGINS = os.environ.get(
     'CSRF_TRUSTED_ORIGINS',
-    'https://profiles.i.burn.camp,https://profiles.nobodies.team'
+    'https://profiles.i.burn.camp,https://profiles.n.burn.camp,https://profiles.nobodies.team'
 ).split(',')
 
 # Application definition

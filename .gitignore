@@ -67,3 +67,4 @@ celerybeat.pid
 *.key
 credentials.json
 service-account.json
+docker/docker-compose.override.yml

@@ -56,17 +56,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    ports:
+      - "8000:8000"  # Direct access; use docker-compose.override.yml for traefik
     networks:
       - nobodies
       - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.profiles.rule=Host(`profiles.i.burn.camp`)"
-      - "traefik.http.routers.profiles.entrypoints=websecure"
-      - "traefik.http.routers.profiles.middlewares=internal-only@file"
-      - "traefik.http.routers.profiles.tls=true"
-      - "traefik.http.routers.profiles.tls.certresolver=letsencrypt"
-      - "traefik.http.services.profiles.loadbalancer.server.port=8000"
 
   celery:
     build:
